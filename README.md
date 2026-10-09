@@ -57,9 +57,9 @@ Cloudflare Pages provides unlimited bandwidth, 500 builds/month, and enterprise-
 3. Select your GitHub repository: `svimran46/certiflowapp.com`.
 4. Configure Build Settings:
    - **Framework preset:** `None`
-   - **Build command:** *(leave empty)*
-   - **Build output directory:** `/` (or root)
-5. Click **Save and Deploy**. Your site is instantly live on a global edge URL (e.g., `certiflowapp.pages.dev`).
+   - **Build command:** `npm run build`
+   - **Build output directory:** `dist`
+5. Click **Save and Deploy**. Your site will build in 5 seconds and deploy live!
 6. Under **Custom domains**, click **Set up a domain**, enter `certiflowapp.com`, and Cloudflare automatically provisions SSL and global DNS routing.
 
 ### Deploy to GitHub Pages:
