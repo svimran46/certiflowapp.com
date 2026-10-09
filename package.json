@@ -4,9 +4,9 @@
   "private": true,
   "description": "CertiFlow - subcontractor COI and endorsement compliance for general contractors",
   "scripts": {
-    "build": "node scripts/check.mjs",
-    "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
+    "build": "node scripts/build.mjs",
+    "dev": "npm run build && wrangler dev",
+    "deploy": "npm run build && wrangler deploy",
     "db:migrate": "wrangler d1 migrations apply certiflow-leads --remote",
     "leads": "wrangler d1 execute certiflow-leads --remote --command \"SELECT created_at, company, name, email, phone, subs, status FROM audit_requests ORDER BY id DESC LIMIT 50\""
   },

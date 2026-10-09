@@ -34,24 +34,24 @@ CertiFlow is a self-service compliance portal starting at **$49/month**:
 
 ## Site and deployment
 
-The site is a static page in `public/` served by a Cloudflare Worker with static assets (`wrangler.jsonc`). One small script, `src/worker.js`, handles the free-audit form at `POST /api/audit` and stores requests in the D1 database `certiflow-leads`.
+The site is a static page in `public/` (built into `dist/`) served by a Cloudflare Worker with static assets (`wrangler.jsonc`). One small script, `src/worker.js`, handles the free-audit form at `POST /api/audit` and stores requests in the D1 database `certiflow-leads`.
 
 ```
 public/            static site (index.html, styles.css, app.js, fonts, _headers, privacy, 404)
 src/worker.js      audit-request API -> D1
 migrations/        D1 schema
-scripts/check.mjs  pre-deploy link check (npm run build)
+scripts/build.mjs  link check, then copy public/ to dist/ (npm run build)
 docs/              strategy notes (see AUDIT.md: move these out of a public repo)
 ```
 
 | Command | What it does |
 |---|---|
 | `npm run dev` | Local server at http://localhost:8787 (run `npx wrangler d1 migrations apply certiflow-leads --local` once first) |
-| `npm run build` | Checks that every local link and asset exists |
+| `npm run build` | Checks every local link and asset, then writes `dist/` |
 | `npm run deploy` | Deploys to the `certiflowapp-com` Worker |
 | `npm run leads` | Lists the latest audit requests from D1 |
 
-Workers Builds (Git integration) deploys `main` automatically with `npx wrangler deploy`. See `AUDIT.md` for the October 2026 site audit and open items.
+Workers Builds (Git integration) deploys `main` automatically: build command `npm run build`, deploy command `npx wrangler deploy`. See `AUDIT.md` for the October 2026 site audit and open items.
 
 ---
 

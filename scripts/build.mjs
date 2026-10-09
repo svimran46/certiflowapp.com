@@ -1,5 +1,6 @@
-// Lightweight pre-deploy check: every local file referenced from the HTML pages exists.
-import { readFileSync, existsSync, readdirSync } from "node:fs";
+// Build step: check every local file referenced from the HTML pages exists,
+// then copy public/ to dist/ (the assets directory Workers Builds deploys).
+import { readFileSync, existsSync, readdirSync, rmSync, cpSync } from "node:fs";
 import { join } from "node:path";
 
 const root = "public";
@@ -16,4 +17,7 @@ for (const page of readdirSync(root).filter((f) => f.endsWith(".html"))) {
   }
 }
 if (missing) process.exit(1);
-console.log("Static site check passed.");
+
+rmSync("dist", { recursive: true, force: true });
+cpSync(root, "dist", { recursive: true });
+console.log("Static site check passed. Output in dist/.");
