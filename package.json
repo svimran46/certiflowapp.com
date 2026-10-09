@@ -2,9 +2,11 @@
   "name": "certiflowapp",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "description": "CertiFlow - subcontractor COI and endorsement compliance for general contractors",
   "scripts": {
     "build": "node scripts/build.mjs",
+    "test": "node --test test/*.test.mjs",
     "dev": "npm run build && wrangler dev",
     "deploy": "npm run build && wrangler deploy",
     "db:migrate": "wrangler d1 migrations apply certiflow-leads --remote",

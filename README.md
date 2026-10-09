@@ -49,6 +49,7 @@ docs/              strategy notes (see AUDIT.md: move these out of a public repo
 |---|---|
 | `npm run dev` | Local server at http://localhost:8787 (run `npx wrangler d1 migrations apply certiflow-leads --local` once first) |
 | `npm run build` | Checks every local link and asset, then writes `dist/` |
+| `npm test` | Runs the audit-request API tests (`test/`) |
 | `npm run deploy` | Deploys to the `certiflowapp-com` Worker |
 | `npm run leads` | Lists the latest audit requests from D1 |
 

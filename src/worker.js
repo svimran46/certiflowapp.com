@@ -4,6 +4,7 @@
 const SUB_RANGES = new Set(["under-25", "25-50", "50-100", "100+"]);
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const MAX_PER_IP_PER_HOUR = 5;
+const MAX_BODY_BYTES = 20000;
 
 function json(status, body) {
   return new Response(JSON.stringify(body), {
@@ -58,11 +59,23 @@ async function handleAuditRequest(request, env, ctx) {
     return json(403, { error: "Cross-origin requests are not accepted." });
   }
 
+  if (!(request.headers.get("Content-Type") || "").includes("application/json")) {
+    return json(415, { error: "Send the form as JSON." });
+  }
+  if (Number(request.headers.get("Content-Length") || 0) > MAX_BODY_BYTES) {
+    return json(413, { error: "The request is too large." });
+  }
+  const raw = await request.text();
+  if (raw.length > MAX_BODY_BYTES) return json(413, { error: "The request is too large." });
+
   let body;
   try {
-    body = await request.json();
+    body = JSON.parse(raw);
   } catch {
     return json(400, { error: "Send the form as JSON." });
+  }
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return json(400, { error: "Send the form as a JSON object." });
   }
 
   // Honeypot: real visitors never see this field.
