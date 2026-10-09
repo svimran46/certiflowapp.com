@@ -559,3 +559,30 @@ summary::after { transition: transform .2s ease; }
 .example { margin-top: 18px; padding: 16px 18px; background: var(--sheet); border: 1px solid var(--rule); border-left: 4px solid var(--highlight); max-width: 66ch; }
 .example-label { font-weight: 700; font-size: .85rem; color: var(--ink-soft); margin-bottom: 6px; }
 .example p + p { margin-top: 8px; }
+
+/* ---------- Broker notice tool ---------- */
+.tool-intro { max-width: 46rem; }
+.tool-intro h1 { font-size: var(--step-3); }
+.tool-intro .lede { margin-top: 18px; }
+.tool-grid { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: clamp(24px, 4vw, 48px); align-items: start; margin-top: clamp(28px, 4vw, 44px); }
+@media (max-width: 960px) { .tool-grid { grid-template-columns: 1fr; } }
+.tool-form { border: 1px solid var(--rule); }
+.tool-fs { border: 0; padding: 0; margin: 0 0 8px; min-width: 0; }
+.tool-fs + .tool-fs { border-top: 1px solid var(--rule); padding-top: 18px; }
+.tool-fs legend { font: 700 1.05rem/1.3 var(--body); padding: 0; margin-bottom: 14px; float: left; width: 100%; }
+.tool-fs legend + * { clear: both; }
+.issues { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 18px; margin-bottom: 14px; }
+@media (max-width: 560px) { .issues { grid-template-columns: 1fr; } }
+.issue { display: flex; gap: 10px; align-items: flex-start; }
+.issue input { width: 20px; height: 20px; min-height: 0; margin: 2px 0 0; padding: 0; flex: none; accent-color: var(--form-blue); }
+.issue label { font-weight: 400; margin: 0; font-size: .95rem; line-height: 1.4; cursor: pointer; }
+.tool-output { position: sticky; top: 88px; }
+@media (max-width: 960px) { .tool-output { position: static; } }
+.tool-output .notice { margin-top: 0; background: var(--sheet); border-color: var(--ink); }
+.tool-notice { max-height: none; min-height: 18rem; }
+.tool-actions { display: inline-flex; gap: 16px; }
+.tool-upsell { margin-top: 16px; padding: 16px 18px; border: 1px dashed var(--form-blue); border-radius: var(--radius); }
+.tool-upsell p { font-size: .95rem; }
+.tool-upsell .btn { margin-top: 12px; }
+.tool-fine { margin-top: 28px; }
+.notice-head .link-btn + .link-btn { margin-left: 0; }
