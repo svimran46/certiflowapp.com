@@ -47,16 +47,20 @@ The web platform in this repository (`index.html`) includes:
 
 ---
 
-## 🌐 Instant Deployment & Custom Domain Setup
+## 🌐 Instant Cloudflare Pages Deployment (Unlimited Free Tier)
 
-This repository is built as a zero-dependency, high-performance web application that deploys in seconds.
+Cloudflare Pages provides unlimited bandwidth, 500 builds/month, and enterprise-grade DDoS protection with zero build limits.
 
-### Deploy to Vercel (Recommended):
-1. Go to [Vercel.com](https://vercel.com) and log in with your GitHub account.
-2. Click **"Add New Project"** and select `certiflowapp.com`.
-3. Click **"Deploy"** (Vercel automatically serves `index.html`).
-4. In **Project Settings $\rightarrow$ Domains**, add `certiflowapp.com` and `www.certiflowapp.com`.
-5. Point your domain's DNS A/CNAME records to Vercel's IP address (`76.76.21.21`).
+### 2-Minute Setup on Cloudflare Pages:
+1. Log in to your [Cloudflare Dashboard](https://dash.cloudflare.com/) and navigate to **Workers & Pages**.
+2. Click **Create Application** $\rightarrow$ **Pages** $\rightarrow$ **Connect to Git**.
+3. Select your GitHub repository: `svimran46/certiflowapp.com`.
+4. Configure Build Settings:
+   - **Framework preset:** `None`
+   - **Build command:** *(leave empty)*
+   - **Build output directory:** `/` (or root)
+5. Click **Save and Deploy**. Your site is instantly live on a global edge URL (e.g., `certiflowapp.pages.dev`).
+6. Under **Custom domains**, click **Set up a domain**, enter `certiflowapp.com`, and Cloudflare automatically provisions SSL and global DNS routing.
 
 ### Deploy to GitHub Pages:
 1. Go to the repository **Settings $\rightarrow$ Pages**.
