@@ -554,3 +554,8 @@ summary::after { transition: transform .2s ease; }
 .confirm-steps li::marker { font-weight: 800; color: var(--form-blue); }
 .confirm .fineprint { margin-top: 18px; }
 .request .form a { color: var(--form-blue); }
+.toc .toc-more { margin-top: 24px; }
+.toc > a:not(.toc-print) { display: block; margin-top: 6px; color: var(--form-blue); }
+.example { margin-top: 18px; padding: 16px 18px; background: var(--sheet); border: 1px solid var(--rule); border-left: 4px solid var(--highlight); max-width: 66ch; }
+.example-label { font-weight: 700; font-size: .85rem; color: var(--ink-soft); margin-bottom: 6px; }
+.example p + p { margin-top: 8px; }

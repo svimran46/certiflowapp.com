@@ -38,7 +38,7 @@ The site is a static page in `public/` (built into `dist/`) served by a Cloudfla
 
 ```
 public/            static site: index.html, styles.css, app.js, fonts, _headers,
-                   guides/ (COI checklist), sample-gap-report (.html and .pdf), privacy, 404
+                   guides/ (COI checklist, premium audits), sample-gap-report (.html and .pdf), privacy, 404
 src/worker.js      audit-request API -> D1
 migrations/        D1 schema
 scripts/build.mjs  link check, then copy public/ to dist/ (npm run build)
@@ -69,6 +69,7 @@ Every audit request stores where the visitor first came from: any `utm_*` tags o
 | Follow-up after a phone call | `https://certiflowapp.com/?ref=call` |
 | Attach or link the sample report | `https://certiflowapp.com/sample-gap-report.pdf` |
 | Send the checklist as a helpful first touch | `https://certiflowapp.com/guides/subcontractor-coi-checklist?utm_source=email&utm_content=checklist` |
+| Follow-up for finance or owners worried about audits | `https://certiflowapp.com/guides/premium-audit-uninsured-subcontractors?utm_source=email&utm_content=premium-audit` |
 
 See the latest requests with `npm run leads`. To compare sources in the D1 console:
 
