@@ -437,8 +437,14 @@ function initChrome() {
   if (selfCheck) new IntersectionObserver(([e]) => { checkVisible = e.isIntersecting; update(); }).observe(selfCheck);
 }
 
+function initPrint() {
+  const btn = document.getElementById("print-guide");
+  if (btn) btn.addEventListener("click", (e) => { e.preventDefault(); window.print(); });
+}
+
 initTabs();
 initCopy();
 initForm();
 initSelfCheck();
 initChrome();
+initPrint();
