@@ -40,6 +40,7 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { -webkit-text-size-adjust: 100%; scroll-padding-top: 80px; }
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 
@@ -120,12 +121,12 @@ a:hover { color: var(--form-blue-dark); }
 /* Hero */
 .hero { padding: clamp(40px, 7vw, 88px) 0 clamp(48px, 7vw, 96px); }
 .hero-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(32px, 5vw, 72px); align-items: start; }
-.hero-copy { padding-top: 12px; max-width: 34rem; }
+.hero-copy { padding-top: 12px; max-width: 34rem; position: sticky; top: 96px; }
 .kicker { font-weight: 600; color: var(--form-blue); margin-bottom: 18px; font-size: var(--step--1); }
 .lede { margin-top: 22px; font-size: 1.15rem; color: var(--ink-soft); max-width: 60ch; }
 .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
 .fineprint { margin-top: 14px; font-size: var(--step--1); color: var(--ink-soft); }
-@media (max-width: 920px) { .hero-grid { grid-template-columns: 1fr; } }
+@media (max-width: 920px) { .hero-grid { grid-template-columns: 1fr; } .hero-copy { position: static; } }
 
 /* The reviewed certificate */
 .tabs { display: flex; gap: 4px; flex-wrap: wrap; }
