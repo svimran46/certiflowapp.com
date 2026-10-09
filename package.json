@@ -8,7 +8,7 @@
     "dev": "npm run build && wrangler dev",
     "deploy": "npm run build && wrangler deploy",
     "db:migrate": "wrangler d1 migrations apply certiflow-leads --remote",
-    "leads": "wrangler d1 execute certiflow-leads --remote --command \"SELECT created_at, company, name, email, phone, subs, status FROM audit_requests ORDER BY id DESC LIMIT 50\""
+    "leads": "wrangler d1 execute certiflow-leads --remote --command \"SELECT created_at, company, name, email, phone, subs, self_check, source, status FROM audit_requests ORDER BY id DESC LIMIT 50\""
   },
   "devDependencies": {
     "wrangler": "4.149.0"

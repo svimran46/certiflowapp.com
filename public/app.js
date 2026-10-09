@@ -247,6 +247,8 @@ function initForm() {
     }
 
     const data = Object.fromEntries(new FormData(form).entries());
+    data.source = VISIT_SOURCE;
+    data.selfCheck = selfCheckSummary;
     submit.disabled = true;
     submit.textContent = "Sending…";
     setStatus("", null);
@@ -269,6 +271,149 @@ function initForm() {
   });
 }
 
+// ---------- Certificate self-check ----------
+const SELF_CHECK = [
+  {
+    id: "gl", short: "GL limits",
+    q: "Does general liability meet your contract, usually $1M each occurrence and $2M aggregate?",
+    gap: "General liability is below what your contract requires. A claim over the limit comes back to you."
+  },
+  {
+    id: "ongoing", short: "CG 20 10",
+    q: "Is there an additional insured endorsement for ongoing operations (CG 20 10 or equivalent) naming your company?",
+    gap: "No ongoing-operations endorsement. A checked box on the ACORD 25 alone doesn't make you an additional insured."
+  },
+  {
+    id: "completed", short: "CG 20 37",
+    q: "Is there a completed operations endorsement (CG 20 37 or equivalent)?",
+    gap: "No completed-operations endorsement. Claims that surface after handover, like defects, won't reach this sub's policy."
+  },
+  {
+    id: "waiver", short: "Waiver",
+    q: "If your contract requires it, is a waiver of subrogation endorsement attached (CG 24 04, and WC 00 03 13 for workers' comp)?",
+    gap: "No waiver of subrogation. The sub's carrier can pursue you to recover what it pays out."
+  },
+  {
+    id: "wc", short: "Workers' comp",
+    q: "Is workers' compensation listed and currently in force?",
+    gap: "Workers' comp is missing or lapsed. An injured worker's claim can fall to you as the general contractor."
+  },
+  {
+    id: "dates", short: "Dates",
+    q: "Do all policies run at least 30 days past today?",
+    gap: "A policy expires within 30 days. Without a renewal certificate, you'll be back here next month."
+  }
+];
+const SC_OPTIONS = [["yes", "Yes"], ["no", "No"], ["unsure", "Not sure"]];
+let selfCheckSummary = "";
+
+function initSelfCheck() {
+  const form = document.getElementById("sc-form");
+  if (!form) return;
+
+  SELF_CHECK.forEach((item, i) => {
+    const fs = el("fieldset", { class: "sc-q" });
+    const legend = el("legend");
+    legend.append(el("span", { class: "sc-n", "aria-hidden": "true" }, String(i + 1)), el("span", null, item.q));
+    fs.append(legend);
+    const opts = el("div", { class: "sc-opts" });
+    for (const [value, label] of SC_OPTIONS) {
+      const id = "sc-" + item.id + "-" + value;
+      const input = el("input", { type: "radio", name: item.id, id, value });
+      const lab = el("label", { for: id, class: "sc-opt sc-opt-" + value }, label);
+      opts.append(input, lab);
+    }
+    fs.append(opts);
+    form.append(fs);
+  });
+
+  const title = document.getElementById("sc-title");
+  const body = document.getElementById("sc-body");
+  const gaps = document.getElementById("sc-gaps");
+  const cta = document.getElementById("sc-cta");
+  const fill = document.getElementById("sc-meter-fill");
+  const result = document.getElementById("sc-result");
+
+  let wasComplete = false;
+  const update = () => {
+    const answers = SELF_CHECK.map((item) => {
+      const checked = form.querySelector('input[name="' + item.id + '"]:checked');
+      return checked ? checked.value : null;
+    });
+    const answered = answers.filter(Boolean).length;
+    const no = SELF_CHECK.filter((_, i) => answers[i] === "no");
+    const unsure = SELF_CHECK.filter((_, i) => answers[i] === "unsure");
+
+    fill.style.width = (answered / SELF_CHECK.length) * 100 + "%";
+    gaps.replaceChildren();
+    for (const item of no) gaps.append(el("li", { class: "sc-gap-no" }, item.gap));
+    for (const item of unsure) gaps.append(el("li", { class: "sc-gap-unsure" }, item.short + ": worth confirming. This is exactly the kind of detail we check."));
+
+    let state = "idle";
+    if (no.length) {
+      state = "fail";
+      title.textContent = no.length === 1 ? "1 gap on this certificate" : no.length + " gaps on this certificate";
+      body.textContent = "If one sub's file looks like this, others probably do too. Send us 5–10 and we'll find them.";
+    } else if (unsure.length) {
+      state = "warn";
+      title.textContent = "Some answers need a closer look";
+      body.textContent = "Endorsement pages are hard to read and easy to miss. We'll check them for you.";
+    } else if (answered === SELF_CHECK.length) {
+      state = "pass";
+      title.textContent = "This certificate looks solid";
+      body.textContent = "That's one sub. A free audit checks the rest the same way, in 24 hours.";
+    } else if (answered) {
+      title.textContent = "So far, so good";
+      body.textContent = (SELF_CHECK.length - answered) + " questions to go.";
+    }
+    result.dataset.state = state;
+    cta.hidden = answered === 0;
+
+    // On narrow screens the result sits below the questions; bring it into view once.
+    const complete = answered === SELF_CHECK.length;
+    if (complete && !wasComplete) {
+      const r = result.getBoundingClientRect();
+      if (r.top > window.innerHeight || r.bottom < 0) {
+        result.scrollIntoView({ behavior: REDUCED_MOTION ? "auto" : "smooth", block: "center" });
+      }
+    }
+    wasComplete = complete;
+
+    selfCheckSummary = answered
+      ? "gaps: " + (no.map((g) => g.short).join(", ") || "none") +
+        "; unsure: " + (unsure.map((g) => g.short).join(", ") || "none") +
+        "; answered " + answered + "/" + SELF_CHECK.length
+      : "";
+  };
+
+  form.addEventListener("change", update);
+  update();
+}
+
+// ---------- Where the visitor came from ----------
+function readSource() {
+  const params = new URLSearchParams(location.search);
+  const parts = [];
+  for (const key of ["utm_source", "utm_medium", "utm_campaign", "utm_content", "ref"]) {
+    if (params.get(key)) parts.push(key + "=" + params.get(key).slice(0, 80));
+  }
+  if (document.referrer) {
+    try {
+      const host = new URL(document.referrer).host;
+      if (host && host !== location.host) parts.push("referrer=" + host);
+    } catch {}
+  }
+  const current = parts.join("; ");
+  // Keep the first-touch source for this tab so in-page navigation doesn't erase it.
+  try {
+    const stored = sessionStorage.getItem("cf-source");
+    if (stored) return stored;
+    if (current) sessionStorage.setItem("cf-source", current);
+  } catch {}
+  return current;
+}
+const VISIT_SOURCE = readSource();
+
 function initChrome() {
   const header = document.querySelector(".site-header");
   const onScroll = () => header.classList.toggle("is-scrolled", window.scrollY > 8);
@@ -279,17 +424,21 @@ function initChrome() {
   const bar = document.getElementById("sticky-cta");
   const hero = document.querySelector(".hero");
   const request = document.getElementById("request");
+  const selfCheck = document.getElementById("self-check");
   if (!bar || !hero || !request || !("IntersectionObserver" in window)) return;
   bar.hidden = false;
   document.documentElement.classList.add("js-sticky"); // phone header drops its button; the bar takes over
   let heroVisible = true;
   let formVisible = false;
-  const update = () => bar.classList.toggle("is-visible", !heroVisible && !formVisible);
+  let checkVisible = false;
+  const update = () => bar.classList.toggle("is-visible", !heroVisible && !formVisible && !checkVisible);
   new IntersectionObserver(([e]) => { heroVisible = e.isIntersecting; update(); }).observe(hero);
   new IntersectionObserver(([e]) => { formVisible = e.isIntersecting; update(); }, { threshold: 0.05 }).observe(request);
+  if (selfCheck) new IntersectionObserver(([e]) => { checkVisible = e.isIntersecting; update(); }).observe(selfCheck);
 }
 
 initTabs();
 initCopy();
 initForm();
+initSelfCheck();
 initChrome();

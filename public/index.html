@@ -47,6 +47,7 @@
       </a>
       <nav class="nav" aria-label="Main">
         <a href="#checks">What we check</a>
+        <a href="#self-check">Self-check</a>
         <a href="#process">How it works</a>
         <a href="#pricing">Pricing</a>
         <a href="#faq">FAQ</a>
@@ -159,8 +160,32 @@
       </div>
     </section>
 
+    <!-- Self-check: lets a visitor test one real certificate before talking to anyone -->
+    <section class="section section-band" id="self-check">
+      <div class="wrap">
+        <div class="section-intro">
+          <h2>Check one certificate yourself</h2>
+          <p>Open the most recent certificate from any sub on an active job and answer six questions. It takes about a minute, and nothing you click here is sent anywhere.</p>
+        </div>
+
+        <div class="selfcheck">
+          <form class="sc-questions" id="sc-form" aria-describedby="sc-hint">
+            <p class="visually-hidden" id="sc-hint">Each answer updates the result next to the questions.</p>
+          </form>
+
+          <aside class="sc-result" id="sc-result" aria-live="polite">
+            <div class="sc-meter" aria-hidden="true"><span id="sc-meter-fill"></span></div>
+            <h3 id="sc-title">Answer the questions to see where this certificate stands</h3>
+            <p id="sc-body">Most gaps we find are in the endorsement pages, not on page one.</p>
+            <ul id="sc-gaps" class="sc-gaps"></ul>
+            <a class="btn" id="sc-cta" href="#request" hidden>Get the rest checked free</a>
+          </aside>
+        </div>
+      </div>
+    </section>
+
     <!-- Process: a real sequence, so numbering is earned -->
-    <section class="section section-band" id="process">
+    <section class="section" id="process">
       <div class="wrap">
         <div class="section-intro">
           <h2>How the free audit works</h2>
@@ -228,7 +253,7 @@
     </section>
 
     <!-- Pricing -->
-    <section class="section" id="pricing">
+    <section class="section section-band" id="pricing">
       <div class="wrap">
         <div class="section-intro">
           <h2>Pricing</h2>
@@ -253,7 +278,7 @@
     </section>
 
     <!-- FAQ -->
-    <section class="section section-band" id="faq">
+    <section class="section" id="faq">
       <div class="wrap narrow">
         <h2>Questions</h2>
         <details>
