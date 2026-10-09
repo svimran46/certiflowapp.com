@@ -5,6 +5,9 @@
   "name": "certiflowapp-com",
   "main": "src/worker.js",
   "compatibility_date": "2026-09-01",
+  // Build public/ into dist/ on every deploy and dev run, whatever the
+  // dashboard's build command is set to.
+  "build": { "command": "node scripts/build.mjs", "watch_dir": "public" },
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
