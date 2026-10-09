@@ -79,7 +79,7 @@
             <button role="tab" id="tab-roofing" aria-controls="sheet" aria-selected="false" tabindex="-1" data-scenario="roofing">Roofing sub</button>
           </div>
 
-          <article class="sheet" id="sheet" role="tabpanel" aria-labelledby="tab-framing" aria-live="polite">
+          <div class="sheet" id="sheet" role="tabpanel" aria-labelledby="tab-framing" aria-live="polite">
             <header class="sheet-head">
               <div>
                 <div class="sheet-title">Certificate of liability insurance</div>
@@ -107,14 +107,14 @@
             </div>
 
             <p class="margin-note" data-field="note"></p>
-          </article>
+          </div>
 
           <div class="notice">
             <div class="notice-head">
               <span>Drafted notice to the broker</span>
               <button type="button" class="link-btn" id="copy-notice">Copy text</button>
             </div>
-            <pre class="notice-body" data-field="notice"></pre>
+            <pre class="notice-body" data-field="notice" tabindex="0" aria-label="Drafted notice text"></pre>
           </div>
         </div>
       </div>
@@ -175,13 +175,13 @@
             <p class="visually-hidden" id="sc-hint">Each answer updates the result next to the questions.</p>
           </form>
 
-          <aside class="sc-result" id="sc-result" aria-live="polite">
+          <div class="sc-result" id="sc-result" aria-live="polite">
             <div class="sc-meter" aria-hidden="true"><span id="sc-meter-fill"></span></div>
             <h3 id="sc-title">Answer the questions to see where this certificate stands</h3>
             <p id="sc-body">Most gaps we find are in the endorsement pages, not on page one.</p>
             <ul id="sc-gaps" class="sc-gaps"></ul>
             <a class="btn" id="sc-cta" href="#request" hidden>Get the rest checked free</a>
-          </aside>
+          </div>
         </div>
       </div>
     </section>
@@ -367,10 +367,10 @@
     </section>
   </main>
 
-  <div class="sticky-cta" id="sticky-cta" hidden>
+  <aside class="sticky-cta" id="sticky-cta" aria-label="Free audit" hidden>
     <span>Free 24-hour COI audit</span>
     <a class="btn btn-small" href="#request">Get a free audit</a>
-  </div>
+  </aside>
 
   <footer class="site-footer">
     <div class="wrap footer-row">
