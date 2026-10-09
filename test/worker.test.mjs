@@ -8,11 +8,19 @@ function fakeDb() {
   return {
     rows,
     prepare(sql) {
-      return {
+      const stmt = {
+        all: () => stmt.bind().all(),
         bind(...args) {
           return {
             async first() {
               if (sql.startsWith("SELECT COUNT(*)")) return { n: rows.filter((r) => r[6] === args[0]).length };
+              throw new Error("unexpected query: " + sql);
+            },
+            async all() {
+              if (sql.startsWith("SELECT created_at")) {
+                const cols = ["company", "name", "email", "phone", "subs", "notes", "ip", "country", "user_agent", "source", "self_check"];
+                return { results: rows.slice().reverse().map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i]]).concat([["created_at", "2026-10-09 12:00:00"], ["status", "new"]]))) };
+              }
               throw new Error("unexpected query: " + sql);
             },
             async run() {
@@ -23,6 +31,7 @@ function fakeDb() {
           };
         }
       };
+      return stmt;
     }
   };
 }
@@ -133,4 +142,52 @@ test("non-API paths are served from static assets", async () => {
   const { env, ctx } = setup();
   const res = await worker.fetch(new Request("https://certiflowapp.com/missing"), env, ctx);
   assert.equal(await res.text(), "asset");
+});
+
+const ADMIN_PW = "correct horse battery";
+const basic = (pw) => ({ Authorization: "Basic " + btoa("admin:" + pw) });
+const getAdmin = (path, headers = {}) => new Request("https://certiflowapp.com" + path, { headers });
+
+test("admin page is a 404 unless a strong password is configured", async () => {
+  for (const pw of [undefined, "short"]) {
+    const { env, ctx } = setup({ ADMIN_PASSWORD: pw, ASSETS: { fetch: async () => new Response("not found", { status: 404 }) } });
+    const res = await worker.fetch(getAdmin("/admin", basic(pw || "")), env, ctx);
+    assert.equal(res.status, 404);
+  }
+});
+
+test("admin page requires the password", async () => {
+  const { env, ctx } = setup({ ADMIN_PASSWORD: ADMIN_PW });
+  const none = await worker.fetch(getAdmin("/admin"), env, ctx);
+  assert.equal(none.status, 401);
+  assert.match(none.headers.get("WWW-Authenticate"), /Basic/);
+  assert.equal((await worker.fetch(getAdmin("/admin", basic("wrong password!!")), env, ctx)).status, 401);
+  assert.equal((await worker.fetch(getAdmin("/admin", { Authorization: "Basic %%%" }), env, ctx)).status, 401);
+  assert.equal((await worker.fetch(new Request("https://certiflowapp.com/admin", { method: "POST", headers: basic(ADMIN_PW) }), env, ctx)).status, 405);
+});
+
+test("admin page lists requests with all user input escaped", async () => {
+  const { env, ctx } = setup({ ADMIN_PASSWORD: ADMIN_PW });
+  await worker.fetch(post({ ...valid, company: "<script>alert(1)</script> GC", notes: "audit in March" }), env, ctx);
+  const res = await worker.fetch(getAdmin("/admin", basic(ADMIN_PW)), env, ctx);
+  assert.equal(res.status, 200);
+  assert.equal(res.headers.get("Cache-Control"), "no-store");
+  assert.match(res.headers.get("Content-Security-Policy"), /default-src 'none'/);
+  const html = await res.text();
+  assert.ok(!html.includes("<script>alert(1)</script>"));
+  assert.match(html, /&lt;script&gt;alert\(1\)&lt;\/script&gt; GC/);
+  assert.match(html, /audit in March/);
+  assert.match(html, /gaps: CG 20 37/);
+});
+
+test("CSV export neutralizes spreadsheet formulas", async () => {
+  const { env, ctx } = setup({ ADMIN_PASSWORD: ADMIN_PW });
+  await worker.fetch(post({ ...valid, company: '=HYPERLINK("http://evil.example")', notes: 'say "hi"' }), env, ctx);
+  const res = await worker.fetch(getAdmin("/admin/leads.csv", basic(ADMIN_PW)), env, ctx);
+  assert.equal(res.status, 200);
+  assert.match(res.headers.get("Content-Type"), /text\/csv/);
+  const csv = await res.text();
+  assert.ok(csv.startsWith("created_at,company,"));
+  assert.ok(csv.includes(`"'=HYPERLINK(""http://evil.example"")"`));
+  assert.ok(csv.includes('"say ""hi"""'));
 });

@@ -126,6 +126,112 @@ async function handleAuditRequest(request, env, ctx) {
   return json(201, { ok: true });
 }
 
+// ---------- Leads page for the founder ----------
+// GET /admin shows recent audit requests; GET /admin/leads.csv downloads them.
+// Off (404) unless the ADMIN_PASSWORD secret is set to 12+ characters:
+//   npx wrangler secret put ADMIN_PASSWORD
+// Sign in with any username and that password.
+
+const ADMIN_HEADERS = {
+  "Cache-Control": "no-store",
+  "X-Robots-Tag": "noindex, nofollow",
+  "X-Frame-Options": "DENY",
+  "X-Content-Type-Options": "nosniff",
+  "Referrer-Policy": "no-referrer",
+  "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+};
+
+async function sameSecret(a, b) {
+  // Compare SHA-256 digests in constant time so response timing doesn't leak the password.
+  const enc = new TextEncoder();
+  const [x, y] = await Promise.all([
+    crypto.subtle.digest("SHA-256", enc.encode(a)),
+    crypto.subtle.digest("SHA-256", enc.encode(b))
+  ]);
+  const xa = new Uint8Array(x), ya = new Uint8Array(y);
+  let diff = 0;
+  for (let i = 0; i < xa.length; i++) diff |= xa[i] ^ ya[i];
+  return diff === 0;
+}
+
+async function isAdmin(request, env) {
+  const header = request.headers.get("Authorization") || "";
+  if (!header.startsWith("Basic ")) return false;
+  let decoded = "";
+  try { decoded = atob(header.slice(6)); } catch { return false; }
+  const password = decoded.slice(decoded.indexOf(":") + 1);
+  return sameSecret(password, env.ADMIN_PASSWORD);
+}
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+}
+
+function csvCell(value) {
+  let v = String(value ?? "");
+  if (/^[=+\-@\t\r]/.test(v)) v = "'" + v; // stop spreadsheets treating input as a formula
+  return '"' + v.replace(/"/g, '""') + '"';
+}
+
+const LEAD_COLUMNS = ["created_at", "company", "name", "email", "phone", "subs", "self_check", "source", "notes", "country", "status"];
+
+async function handleAdmin(request, env, url) {
+  if (!env.ADMIN_PASSWORD || env.ADMIN_PASSWORD.length < 12 || !env.LEADS_DB) {
+    return env.ASSETS.fetch(request); // no asset at this path, so this is the normal 404 page
+  }
+  if (request.method !== "GET") return new Response("Method not allowed", { status: 405, headers: ADMIN_HEADERS });
+  if (!(await isAdmin(request, env))) {
+    return new Response("Sign in to see audit requests.", {
+      status: 401,
+      headers: { ...ADMIN_HEADERS, "WWW-Authenticate": 'Basic realm="CertiFlow leads", charset="UTF-8"' }
+    });
+  }
+
+  const { results = [] } = await env.LEADS_DB
+    .prepare("SELECT " + LEAD_COLUMNS.join(", ") + " FROM audit_requests ORDER BY id DESC LIMIT 500")
+    .all();
+
+  if (url.pathname === "/admin/leads.csv") {
+    const csv = [LEAD_COLUMNS.join(",")]
+      .concat(results.map((r) => LEAD_COLUMNS.map((c) => csvCell(r[c])).join(",")))
+      .join("\r\n");
+    return new Response(csv, {
+      headers: { ...ADMIN_HEADERS, "Content-Type": "text/csv; charset=utf-8", "Content-Disposition": 'attachment; filename="certiflow-leads.csv"' }
+    });
+  }
+
+  const rows = results.map((r) => `<tr>
+      <td>${escapeHtml(r.created_at)} UTC</td>
+      <td><strong>${escapeHtml(r.company)}</strong><br>${escapeHtml(r.name)}</td>
+      <td><a href="mailto:${escapeHtml(r.email)}">${escapeHtml(r.email)}</a><br>${escapeHtml(r.phone)}</td>
+      <td>${escapeHtml(r.subs)}</td>
+      <td>${escapeHtml(r.self_check)}</td>
+      <td>${escapeHtml(r.source)}</td>
+      <td class="notes">${escapeHtml(r.notes)}</td>
+    </tr>`).join("");
+
+  const html = `<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex">
+<title>Audit requests · CertiFlow</title>
+<style>
+  body { font: 15px/1.5 system-ui, sans-serif; margin: 24px; color: #171a21; background: #eef1f6; }
+  h1 { font-size: 22px; margin: 0 0 4px; } p { margin: 0 0 16px; color: #4a5161; }
+  a { color: #1f3c88; }
+  .wrap { overflow-x: auto; background: #fff; border: 1px solid #c5cee0; }
+  table { border-collapse: collapse; width: 100%; min-width: 900px; }
+  th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid #dde3ee; }
+  th { font-size: 13px; color: #4a5161; background: #f8f9fc; }
+  .notes { max-width: 320px; white-space: pre-wrap; }
+</style></head><body>
+<h1>Audit requests</h1>
+<p>${results.length} most recent, newest first. <a href="/admin/leads.csv">Download CSV</a></p>
+<div class="wrap"><table>
+<thead><tr><th>Received</th><th>Company</th><th>Contact</th><th>Subs</th><th>Self-check</th><th>Source</th><th>Notes</th></tr></thead>
+<tbody>${rows || '<tr><td colspan="7">No requests yet.</td></tr>'}</tbody>
+</table></div></body></html>`;
+  return new Response(html, { headers: { ...ADMIN_HEADERS, "Content-Type": "text/html; charset=utf-8" } });
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -135,6 +241,14 @@ export default {
       } catch (err) {
         console.error("audit request failed", err && err.stack);
         return json(500, { error: "Something went wrong storing the request." });
+      }
+    }
+    if (url.pathname === "/admin" || url.pathname === "/admin/leads.csv") {
+      try {
+        return await handleAdmin(request, env, url);
+      } catch (err) {
+        console.error("admin page failed", err && err.stack);
+        return new Response("Couldn't load audit requests.", { status: 500, headers: ADMIN_HEADERS });
       }
     }
     // Anything else that isn't a static file gets the 404 page (not_found_handling in wrangler.jsonc).

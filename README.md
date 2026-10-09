@@ -72,7 +72,9 @@ Every audit request stores where the visitor first came from: any `utm_*` tags o
 | Give a useful tool to an office manager | `https://certiflowapp.com/tools/broker-notice?utm_source=email&utm_content=notice-tool` |
 | Follow-up for finance or owners worried about audits | `https://certiflowapp.com/guides/premium-audit-uninsured-subcontractors?utm_source=email&utm_content=premium-audit` |
 
-See the latest requests with `npm run leads`. To compare sources in the D1 console:
+**See requests in your browser:** set a password once with `npx wrangler secret put ADMIN_PASSWORD` (12+ characters), then open `https://certiflowapp.com/admin` and sign in with any username and that password. It lists the latest 500 requests, with their source and self-check answers, and has a CSV download. Until the secret is set, `/admin` is a normal 404.
+
+From a terminal: `npm run leads`. To compare sources in the D1 console:
 
 ```sql
 SELECT source, COUNT(*) AS requests FROM audit_requests GROUP BY source ORDER BY requests DESC;

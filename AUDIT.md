@@ -91,7 +91,7 @@ Quality checks:
 
 ## Leads: where they go
 
-- **See requests:** `npm run leads`, or Cloudflare → D1 → `certiflow-leads` → Console:
+- **See requests:** the password-protected `/admin` page (set the `ADMIN_PASSWORD` secret first), `npm run leads`, or Cloudflare → D1 → `certiflow-leads` → Console:
   `SELECT * FROM audit_requests ORDER BY id DESC;`
 - **Next step (recommended):** turn on email alerts by setting the `RESEND_API_KEY` and `NOTIFY_EMAIL` Worker secrets (steps in the README). Without them you have to check D1 yourself.
 - **`support@certiflowapp.com`** is used across the site. Make sure it actually receives mail (for example, Cloudflare Email Routing to your inbox).
