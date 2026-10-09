@@ -363,6 +363,18 @@
           <button class="btn btn-block" type="submit" id="form-submit">Request my free audit</button>
           <p class="fineprint">We'll only use these details to arrange your audit.</p>
         </form>
+
+        <div class="form confirm" id="audit-confirm" tabindex="-1" hidden>
+          <svg class="confirm-mark" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" stroke-width="3"/><path d="M14 25l7 7 13-15" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <h3>Request received</h3>
+          <p>Thanks<span data-confirm="name"></span>. Here's what happens next:</p>
+          <ol class="confirm-steps">
+            <li><strong>Within one business day</strong> we email <span data-confirm="email"></span> with where to send your certificates.</li>
+            <li><strong>You send 5–10 certificates</strong> and their endorsement pages, plus your insurance requirements if you have them written down.</li>
+            <li><strong>Within 24 hours of receiving them</strong> you get your gap report and drafted broker notices.</li>
+          </ol>
+          <p class="fineprint">While you wait, the <a href="/guides/subcontractor-coi-checklist">subcontractor certificate checklist</a> covers everything we'll look at.</p>
+        </div>
       </div>
     </section>
   </main>

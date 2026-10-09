@@ -207,7 +207,8 @@ function initCopy() {
 function mailtoFallback(data) {
   const body =
     "Company: " + data.company + "\nName: " + data.name + "\nEmail: " + data.email +
-    "\nPhone: " + (data.phone || "") + "\nActive subcontractors: " + data.subs + "\n\n" + (data.notes || "");
+    "\nPhone: " + (data.phone || "") + "\nActive subcontractors: " + data.subs +
+    (data.selfCheck ? "\nSelf-check: " + data.selfCheck : "") + "\n\n" + (data.notes || "");
   return "mailto:support@certiflowapp.com?subject=" + encodeURIComponent("Free COI audit request: " + data.company) +
     "&body=" + encodeURIComponent(body);
 }
@@ -259,12 +260,19 @@ function initForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
       });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      form.reset();
-      setStatus("Request received. We'll email " + data.email + " within one business day with where to send your certificates.", "ok");
-      submit.textContent = "Request sent";
-    } catch {
-      setStatus("The request didn't go through.", "error", { href: mailtoFallback(data), text: "Send it by email instead" });
+      if (!res.ok) {
+        let message = "";
+        try { message = (await res.json()).error || ""; } catch {}
+        throw new Error(res.status === 429 && message ? message : "");
+      }
+      const confirm = document.getElementById("audit-confirm");
+      confirm.querySelector('[data-confirm="name"]').textContent = ", " + data.name.split(" ")[0];
+      confirm.querySelector('[data-confirm="email"]').textContent = data.email;
+      form.hidden = true;
+      confirm.hidden = false;
+      confirm.focus();
+    } catch (err) {
+      setStatus(err.message || "The request didn't go through.", "error", { href: mailtoFallback(data), text: "Send it by email instead" });
       submit.disabled = false;
       submit.textContent = "Request my free audit";
     }
