@@ -37,7 +37,8 @@ CertiFlow is a self-service compliance portal starting at **$49/month**:
 The site is a static page in `public/` (built into `dist/`) served by a Cloudflare Worker with static assets (`wrangler.jsonc`). One small script, `src/worker.js`, handles the free-audit form at `POST /api/audit` and stores requests in the D1 database `certiflow-leads`.
 
 ```
-public/            static site (index.html, styles.css, app.js, fonts, _headers, privacy, 404)
+public/            static site: index.html, styles.css, app.js, fonts, _headers,
+                   guides/ (COI checklist), sample-gap-report (.html and .pdf), privacy, 404
 src/worker.js      audit-request API -> D1
 migrations/        D1 schema
 scripts/build.mjs  link check, then copy public/ to dist/ (npm run build)
@@ -52,6 +53,36 @@ docs/              strategy notes (see AUDIT.md: move these out of a public repo
 | `npm run leads` | Lists the latest audit requests from D1 |
 
 Workers Builds (Git integration) deploys `main` automatically: build command `npm run build`, deploy command `npx wrangler deploy`. See `AUDIT.md` for the October 2026 site audit and open items.
+
+---
+
+## Tracking outreach and reading leads
+
+Every audit request stores where the visitor first came from: any `utm_*` tags or a short `ref` code in the link, plus the referring site. It also stores their answers to the on-page self-check. Tag every link you send so you can see which emails and campaigns turn into audits.
+
+| Where the link goes | Link to use |
+|---|---|
+| Cold email, template A (finance / office admin) | `https://certiflowapp.com/?utm_source=email&utm_campaign=dfw-oct&utm_content=template-a` |
+| Cold email, template B (compliance lead) | `https://certiflowapp.com/?utm_source=email&utm_campaign=dfw-oct&utm_content=template-b` |
+| LinkedIn message | `https://certiflowapp.com/?utm_source=linkedin` |
+| Follow-up after a phone call | `https://certiflowapp.com/?ref=call` |
+| Attach or link the sample report | `https://certiflowapp.com/sample-gap-report.pdf` |
+| Send the checklist as a helpful first touch | `https://certiflowapp.com/guides/subcontractor-coi-checklist?utm_source=email&utm_content=checklist` |
+
+See the latest requests with `npm run leads`. To compare sources in the D1 console:
+
+```sql
+SELECT source, COUNT(*) AS requests FROM audit_requests GROUP BY source ORDER BY requests DESC;
+```
+
+**Email alerts for new requests (optional):** create a free [Resend](https://resend.com) account, then:
+
+```sh
+npx wrangler secret put RESEND_API_KEY   # the API key from Resend
+npx wrangler secret put NOTIFY_EMAIL     # the address you signed up to Resend with
+```
+
+Each new request then arrives in your inbox, with reply-to set to the contractor. Once `certiflowapp.com` is verified in Resend, set `NOTIFY_FROM` (for example `CertiFlow <leads@certiflowapp.com>`) to send to any address.
 
 ---
 

@@ -71,19 +71,38 @@ The old page was a generic dark SaaS template (navy, emerald glow, identical rou
   - FAQ
   - The inline request form
 
+## Added after the audit
+
+| Addition | Why it helps the goal |
+|---|---|
+| **Live review animation** on the hero certificate | Shows the product working in the first two seconds, instead of describing it. |
+| **Certificate self-check** (six questions, live result) | Lets a skeptical visitor test one of their own certificates. Most "no" or "not sure" answers point straight at the audit. Their answers are saved with their request. |
+| **Sample gap report**, on the page and as a one-page PDF | Shows exactly what they get. The PDF can be forwarded to a boss or attached to cold emails. |
+| **Subcontractor COI checklist guide** (`/guides/subcontractor-coi-checklist`) | Shows you know the subject, is useful enough to share, and can rank for COI and endorsement searches. |
+| **Reasons to trust you beside the form**, and a **next-steps confirmation** after sending | Answers "is this safe and what happens next?" at the moment of decision. |
+| **FAQ on brokers and Procore** | Answers the objection your strategy doc lists as the main risk. |
+| **Lead source tracking**, plus **optional email alerts** (Resend) | Shows which outreach produces audits, so you can run the day-14 go/kill check on real numbers. |
+| **Phone sticky button**, smoother transitions, scroll-aware header | Keeps the next step one tap away on phones without covering content. |
+
+Quality checks:
+- **Lighthouse:** 100 for performance, accessibility, best practices and SEO, on both mobile and desktop.
+- **axe accessibility scan:** no violations on any page.
+- **Speed:** largest contentful paint is 1.7 s on simulated mobile.
+
 ## Leads: where they go
 
 - **See requests:** `npm run leads`, or Cloudflare → D1 → `certiflow-leads` → Console:
   `SELECT * FROM audit_requests ORDER BY id DESC;`
-- **Next step (recommended):** get an email for each new request. Use Cloudflare Email Routing with a `send_email` binding, or a Resend API key as a Worker secret. Without it you have to check D1 yourself.
+- **Next step (recommended):** turn on email alerts by setting the `RESEND_API_KEY` and `NOTIFY_EMAIL` Worker secrets (steps in the README). Without them you have to check D1 yourself.
 - **`support@certiflowapp.com`** is used across the site. Make sure it actually receives mail (for example, Cloudflare Email Routing to your inbox).
 
 ## Still open
 
 1. Make the repo private, or move `docs/` out of it (finding 2).
 2. Confirm the custom domain is attached and DNS resolves (finding 4).
-3. Set up email routing for `support@` and new-lead notifications.
-4. Read `/privacy` and the FAQ answers and make sure you can honor them.
-5. After the merge, check the first Workers Builds deploy uses the new `wrangler.jsonc`:
+3. Set up email routing for `support@`, and set the Resend secrets for new-lead alerts.
+4. Add a real founder name, photo and LinkedIn link to the page. That's the biggest trust signal still missing, and only you can supply it.
+5. Read `/privacy` and the FAQ answers and make sure you can honor them.
+6. After the merge, check the first Workers Builds deploy uses the new `wrangler.jsonc`:
    - The build command, if set, should be `npm run build`.
    - The deploy command should be `npx wrangler deploy`.
