@@ -70,10 +70,16 @@ function el(tag, attrs, text) {
   return node;
 }
 
+const REDUCED_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+let scanRun = 0; // bumps on every render so an older scan stops when the tab changes
+
 function renderScenario(key, animate) {
   const s = SCENARIOS[key];
   const sheet = document.getElementById("sheet");
   const field = (name) => document.querySelector('[data-field="' + name + '"]');
+  const progress = field("progress");
+  const run = ++scanRun;
+  const scan = animate && !REDUCED_MOTION;
 
   field("broker").textContent = s.broker;
   field("insured").textContent = s.insured;
@@ -81,40 +87,70 @@ function renderScenario(key, animate) {
   const stamp = field("stamp");
   stamp.textContent = s.stamp;
   stamp.dataset.status = s.status;
-  if (animate) {
-    stamp.classList.remove("is-new");
-    void stamp.offsetWidth; // restart the animation
-    stamp.classList.add("is-new");
-  }
+  stamp.classList.remove("is-new");
 
   const body = field("coverages");
   body.replaceChildren();
+  const steps = [];
   for (const [type, exp, limits, ok] of s.coverages) {
     const tr = el("tr");
     const typeCell = el("td");
-    const typeText = el("span", ok ? null : { class: "mark" }, type);
-    typeCell.append(typeText);
-    tr.append(typeCell, el("td", null, exp));
-    const limitCell = el("td", null, limits);
-    tr.append(limitCell);
+    typeCell.append(el("span", ok ? null : { class: "mark" }, type));
+    tr.append(typeCell, el("td", null, exp), el("td", null, limits));
     const res = el("td", { class: "res " + (ok ? "res-pass" : "res-fail") }, ok ? "✓" : "✕");
     res.append(el("span", { class: "visually-hidden" }, ok ? " meets requirement" : " fails requirement"));
     tr.append(res);
     body.append(tr);
+    steps.push(tr);
   }
 
   const list = field("endorsements");
   list.replaceChildren();
   for (const [form, present] of s.endorsements) {
-    list.append(el("li", present ? null : { class: "missing" }, present ? form : form + " missing"));
+    const li = el("li", present ? null : { class: "missing" }, present ? form : form + " missing");
+    list.append(li);
+    steps.push(li);
   }
 
   const note = field("note");
   note.textContent = s.note;
   note.dataset.status = s.status;
-
   field("notice").textContent = s.notice;
   sheet.setAttribute("aria-labelledby", "tab-" + key);
+
+  const failures = s.coverages.filter((c) => !c[3]).length + s.endorsements.filter((e) => !e[1]).length;
+  const summary = failures
+    ? "Reviewed " + steps.length + " items: " + failures + (failures === 1 ? " problem found" : " problems found")
+    : "Reviewed " + steps.length + " items: all meet the requirements";
+
+  const finish = () => {
+    sheet.classList.remove("is-scanning");
+    sheet.classList.add("is-done");
+    progress.textContent = summary;
+    progress.dataset.status = s.status;
+    if (scan) stamp.classList.add("is-new");
+  };
+
+  if (!scan) {
+    steps.forEach((n) => n.classList.add("is-checked"));
+    finish();
+    return;
+  }
+
+  // One orchestrated moment: rows are ticked off top to bottom, then the stamp lands.
+  sheet.classList.remove("is-done");
+  sheet.classList.remove("is-scanning");
+  void sheet.offsetWidth; // restart the scan-line animation
+  sheet.style.setProperty("--scan-end", sheet.offsetHeight + "px");
+  sheet.classList.add("is-scanning");
+  progress.dataset.status = "";
+  progress.textContent = "Checking against project requirements…";
+  steps.forEach((n, i) => {
+    setTimeout(() => {
+      if (run === scanRun) n.classList.add("is-checked");
+    }, 180 + i * 150);
+  });
+  setTimeout(() => { if (run === scanRun) finish(); }, 260 + steps.length * 150);
 }
 
 function initTabs() {
@@ -144,7 +180,7 @@ function initTabs() {
     });
   });
 
-  renderScenario(tabs[0].dataset.scenario, false);
+  renderScenario(tabs[0].dataset.scenario, true);
 }
 
 function initCopy() {
@@ -233,6 +269,27 @@ function initForm() {
   });
 }
 
+function initChrome() {
+  const header = document.querySelector(".site-header");
+  const onScroll = () => header.classList.toggle("is-scrolled", window.scrollY > 8);
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  // Phone-only bar: shown once the hero is out of view, hidden again near the form.
+  const bar = document.getElementById("sticky-cta");
+  const hero = document.querySelector(".hero");
+  const request = document.getElementById("request");
+  if (!bar || !hero || !request || !("IntersectionObserver" in window)) return;
+  bar.hidden = false;
+  document.documentElement.classList.add("js-sticky"); // phone header drops its button; the bar takes over
+  let heroVisible = true;
+  let formVisible = false;
+  const update = () => bar.classList.toggle("is-visible", !heroVisible && !formVisible);
+  new IntersectionObserver(([e]) => { heroVisible = e.isIntersecting; update(); }).observe(hero);
+  new IntersectionObserver(([e]) => { formVisible = e.isIntersecting; update(); }, { threshold: 0.05 }).observe(request);
+}
+
 initTabs();
 initCopy();
 initForm();
+initChrome();

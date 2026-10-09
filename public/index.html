@@ -85,6 +85,7 @@
               </div>
               <div class="stamp" data-field="stamp">Action needed</div>
             </header>
+            <p class="scan-status" data-field="progress" role="status"></p>
 
             <dl class="sheet-parties">
               <div><dt>Producer (broker)</dt><dd data-field="broker">Mesa Ridge Insurance Group</dd></div>
@@ -139,7 +140,7 @@
             <ul class="pages">
               <li><span>ACORD 25, page 1</span><span class="ok">Limits meet spec</span></li>
               <li><span>CG 20 10 ongoing operations</span><span class="ok">Attached</span></li>
-              <li class="miss"><span>CG 20 37 completed operations</span><span class="bad">Not attached</span></li>
+              <li class="miss"><span><span class="mark">CG 20 37 completed operations</span></span><span class="bad">Not attached</span></li>
               <li><span>CG 24 04 waiver of subrogation</span><span class="ok">Attached</span></li>
             </ul>
             <p>A defect claim after turnover would not reach this sub's policy.</p>
@@ -179,6 +180,40 @@
             <p>Within 24 hours: a one-page report per sub, ranked by risk, with a ready-to-send deficiency notice for each broker.</p>
           </li>
         </ol>
+
+        <figure class="report" aria-labelledby="report-title">
+          <figcaption class="report-caption">This is what lands in your inbox. Sample report, fictional subcontractors.</figcaption>
+          <div class="report-sheet">
+            <header class="report-head">
+              <div>
+                <div class="report-title" id="report-title">Subcontractor insurance gap report</div>
+                <div class="report-meta">Prepared for Harbor &amp; Main Builders. 10 certificates reviewed against your subcontract requirements.</div>
+              </div>
+              <svg class="report-logo" viewBox="0 0 32 32" aria-hidden="true"><path d="M7 3h13l6 6v20H7z" fill="#fff" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M20 3v6h6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M11 18.5l3.5 3.5 7-7.5" fill="none" stroke="#17804a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </header>
+
+            <div class="report-summary">
+              <div class="tally"><span class="tally-n tally-fail">1</span><span>Stop work</span></div>
+              <div class="tally"><span class="tally-n tally-warn">3</span><span>Need action</span></div>
+              <div class="tally"><span class="tally-n tally-pass">6</span><span>Compliant</span></div>
+              <div class="tally-bar" role="img" aria-label="1 stop work, 3 need action, 6 compliant out of 10">
+                <span class="seg seg-fail"></span><span class="seg seg-warn"></span><span class="seg seg-pass"></span>
+              </div>
+            </div>
+
+            <table class="report-table">
+              <caption class="visually-hidden">Findings ranked by risk</caption>
+              <thead><tr><th scope="col">Subcontractor</th><th scope="col">Finding</th><th scope="col">What happens next</th></tr></thead>
+              <tbody>
+                <tr><td><span class="dot dot-fail"></span>Tri-Valley Roofing</td><td>Workers' comp lapsed 09/26/2026</td><td>Notice drafted to Bellmont Underwriting</td></tr>
+                <tr><td><span class="dot dot-warn"></span>Lone Pine Framing</td><td>No CG 20 37 completed operations endorsement</td><td>Notice drafted to Mesa Ridge Insurance</td></tr>
+                <tr><td><span class="dot dot-warn"></span>Clearline Glass &amp; Glazing</td><td>GL aggregate $1M, contract requires $2M</td><td>Notice drafted to Northfork Agency</td></tr>
+                <tr><td><span class="dot dot-warn"></span>Brightwire Electric</td><td>GL renews in 21 days</td><td>Renewal request drafted</td></tr>
+                <tr class="report-more"><td colspan="3">+ 6 compliant subcontractors, each with its certificate and endorsements on file</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </figure>
 
         <div class="roadmap">
           <h3>What we're building with our first contractors</h3>
@@ -250,6 +285,12 @@
         <div class="request-copy">
           <h2>Request a free audit</h2>
           <p>Tell us who you are and roughly how many subs you manage. We'll reply within one business day with where to send 5–10 certificates.</p>
+          <ul class="assurances">
+            <li><strong>No cost, no card, no contract.</strong> You keep the report either way.</li>
+            <li><strong>Checked by a person.</strong> Every finding is reviewed before it reaches you.</li>
+            <li><strong>Your files stay private.</strong> Used only for your report, deleted when you ask.</li>
+            <li><strong>Fast.</strong> A reply within one business day, the report within 24 hours of receiving your files.</li>
+          </ul>
           <p class="fineprint">Prefer email? Write to <a href="mailto:support@certiflowapp.com?subject=Free%20COI%20audit">support@certiflowapp.com</a>.</p>
         </div>
 
@@ -298,6 +339,11 @@
       </div>
     </section>
   </main>
+
+  <div class="sticky-cta" id="sticky-cta" hidden>
+    <span>Free 24-hour COI audit</span>
+    <a class="btn btn-small" href="#request">Get a free audit</a>
+  </div>
 
   <footer class="site-footer">
     <div class="wrap footer-row">
