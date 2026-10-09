@@ -14,13 +14,6 @@
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page"
   },
-  "d1_databases": [
-    {
-      "binding": "LEADS_DB",
-      "database_name": "certiflow-leads",
-      "database_id": "4f1ed89e-21ba-4a96-80a8-841c284c05ae",
-      "migrations_dir": "migrations"
-    }
-  ],
+  // DIAGNOSTIC (temporary): D1 binding removed to test whether Workers Builds fails on D1 permissions.
   "observability": { "enabled": true }
 }
