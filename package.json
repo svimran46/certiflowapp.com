@@ -2,8 +2,15 @@
   "name": "certiflowapp",
   "version": "1.0.0",
   "private": true,
-  "description": "CertiFlow - Automated Subcontractor Insurance (COI) & Endorsement Compliance Portal",
+  "description": "CertiFlow - subcontractor COI and endorsement compliance for general contractors",
   "scripts": {
-    "build": "node -e \"const fs=require('fs'); fs.mkdirSync('dist', {recursive: true}); fs.copyFileSync('index.html', 'dist/index.html'); if(fs.existsSync('_headers')) fs.copyFileSync('_headers', 'dist/_headers'); console.log('Build complete: output in dist/');\""
+    "build": "node scripts/check.mjs",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:migrate": "wrangler d1 migrations apply certiflow-leads --remote",
+    "leads": "wrangler d1 execute certiflow-leads --remote --command \"SELECT created_at, company, name, email, phone, subs, status FROM audit_requests ORDER BY id DESC LIMIT 50\""
+  },
+  "devDependencies": {
+    "wrangler": "4.149.0"
   }
 }

@@ -1,0 +1,22 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Must match the Worker name in the Cloudflare dashboard (Workers Builds deploys to it).
+  "name": "certiflowapp-com",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+  "d1_databases": [
+    {
+      "binding": "LEADS_DB",
+      "database_name": "certiflow-leads",
+      "database_id": "4f1ed89e-21ba-4a96-80a8-841c284c05ae",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "observability": { "enabled": true }
+}

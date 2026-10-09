@@ -32,55 +32,26 @@ CertiFlow is a self-service compliance portal starting at **$49/month**:
 
 ---
 
-## 🚀 Live Demo & Features
+## Site and deployment
 
-The web platform in this repository (`index.html`) includes:
-
-- **Institutional Design:** High-trust navy and emerald color palette built with Tailwind CSS.
-- **Interactive Auditor Sandbox:** Live scenario simulator demonstrating:
-  - Scenario A: Fully Compliant HVAC Subcontractor (Audit badge issued).
-  - Scenario B: Missing CG 20 37 Completed Operations Endorsement (Deficiency alert).
-  - Scenario C: Lapsed Workers Compensation (Stop-work safety red flag).
-- **Automated Broker Message Generator:** 1-click copyable deficiency notifications.
-- **Interactive Lead Capture Modal:** Captures GC company name, active subcontractor volume, and optional sample PDF upload for free 24-hour audits.
-- **Transparent Tiered Pricing:** Starter ($49/mo), Commercial Growth ($99/mo), and Commercial Pro ($199/mo).
-
----
-
-## 🌐 Instant Cloudflare Pages Deployment (Unlimited Free Tier)
-
-Cloudflare Pages provides unlimited bandwidth, 500 builds/month, and enterprise-grade DDoS protection with zero build limits.
-
-### 2-Minute Setup on Cloudflare Pages:
-1. Log in to your [Cloudflare Dashboard](https://dash.cloudflare.com/) and navigate to **Workers & Pages**.
-2. Click **Create Application** $\rightarrow$ **Pages** $\rightarrow$ **Connect to Git**.
-3. Select your GitHub repository: `svimran46/certiflowapp.com`.
-4. Configure Build Settings:
-   - **Framework preset:** `None`
-   - **Build command:** `npm run build`
-   - **Build output directory:** `dist`
-5. Click **Save and Deploy**. Your site will build in 5 seconds and deploy live!
-6. Under **Custom domains**, click **Set up a domain**, enter `certiflowapp.com`, and Cloudflare automatically provisions SSL and global DNS routing.
-
-### Deploy to GitHub Pages:
-1. Go to the repository **Settings $\rightarrow$ Pages**.
-2. Under **Build and deployment**, select `Deploy from a branch` $\rightarrow$ `main` $\rightarrow$ `/ (root)`.
-3. Under **Custom domain**, enter `certiflowapp.com` and click Save.
-4. Check **Enforce HTTPS**.
-
----
-
-## 📁 Repository Structure
+The site is a static page in `public/` served by a Cloudflare Worker with static assets (`wrangler.jsonc`). One small script, `src/worker.js`, handles the free-audit form at `POST /api/audit` and stores requests in the D1 database `certiflow-leads`.
 
 ```
-certiflowapp.com/
-├── index.html                  # Production landing page & interactive audit portal
-├── README.md                   # Platform documentation & deployment guide
-├── docs/
-│   ├── initial-prospect-list.csv   # 18 verified commercial GCs for initial outreach
-│   ├── day-1-action-guide.md       # Cold outreach scripts, phone pitch, & audit prompts
-│   └── final-recommendation.md     # Market teardown, unit economics, & validation roadmap
+public/            static site (index.html, styles.css, app.js, fonts, _headers, privacy, 404)
+src/worker.js      audit-request API -> D1
+migrations/        D1 schema
+scripts/check.mjs  pre-deploy link check (npm run build)
+docs/              strategy notes (see AUDIT.md: move these out of a public repo)
 ```
+
+| Command | What it does |
+|---|---|
+| `npm run dev` | Local server at http://localhost:8787 (run `npx wrangler d1 migrations apply certiflow-leads --local` once first) |
+| `npm run build` | Checks that every local link and asset exists |
+| `npm run deploy` | Deploys to the `certiflowapp-com` Worker |
+| `npm run leads` | Lists the latest audit requests from D1 |
+
+Workers Builds (Git integration) deploys `main` automatically with `npx wrangler deploy`. See `AUDIT.md` for the October 2026 site audit and open items.
 
 ---
 

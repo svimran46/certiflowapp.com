@@ -1,799 +1,311 @@
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CertiFlow | Automated Subcontractor Insurance (COI) & Endorsement Compliance</title>
-    <meta name="description" content="Audit-proof subcontractor insurance compliance for commercial General Contractors. Automatically extract ACORD 25 policy limits, verify CG 20 10 / CG 20 37 endorsements, and automate broker follow-ups.">
-    <meta name="keywords" content="certificate of insurance, COI tracking, subcontractor compliance, ACORD 25, general contractor software, construction insurance audit">
-    
-    <!-- Open Graph / Social -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://certiflowapp.com/">
-    <meta property="og:title" content="CertiFlow | Subcontractor COI & Endorsement Portal">
-    <meta property="og:description" content="Eliminate carrier audit penalties and tort liability. Verify ACORD 25 certificates and endorsements in seconds.">
-    <meta property="og:image" content="https://certiflowapp.com/og-image.png">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CertiFlow: subcontractor COI and endorsement audits for general contractors</title>
+  <meta name="description" content="Send 5–10 subcontractor certificates of insurance. Within 24 hours you get a free gap report covering expired policies, low limits, and missing CG 20 10, CG 20 37 and waiver endorsements.">
+  <link rel="canonical" href="https://certiflowapp.com/">
+  <meta name="theme-color" content="#1f3c88">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/public-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/styles.css">
 
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#f0fdf4',
-                            100: '#dcfce7',
-                            500: '#10b981',
-                            600: '#059669',
-                            700: '#047857',
-                        },
-                        navy: {
-                            800: '#1e293b',
-                            900: '#0f172a',
-                            950: '#020617',
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="CertiFlow">
+  <meta property="og:url" content="https://certiflowapp.com/">
+  <meta property="og:title" content="Find the missing endorsement before your carrier's auditor does">
+  <meta property="og:description" content="Free 24-hour COI gap audit for general contractors: expired policies, low limits, and missing CG 20 10 / CG 20 37 endorsements.">
+  <meta property="og:image" content="https://certiflowapp.com/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
 
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .gradient-border {
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: linear-gradient(180deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.9) 100%);
-        }
-    </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "CertiFlow subcontractor COI audit",
+    "url": "https://certiflowapp.com/",
+    "serviceType": "Certificate of insurance and endorsement compliance review",
+    "audience": { "@type": "BusinessAudience", "name": "Commercial general contractors" },
+    "areaServed": "US",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD", "description": "Free 24-hour gap audit of 5–10 subcontractor certificates" }
+  }
+  </script>
+  <script src="/app.js" defer></script>
 </head>
-<body class="bg-navy-950 text-slate-100 antialiased selection:bg-brand-500 selection:text-white">
+<body>
+  <a class="skip" href="#main">Skip to content</a>
 
-    <!-- Top Announcement Banner -->
-    <div class="bg-gradient-to-r from-brand-700 via-brand-600 to-teal-700 text-white text-xs md:text-sm font-medium py-2 px-4 text-center">
-        <span class="inline-flex items-center gap-2">
-            <span class="bg-white/20 text-white text-[11px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Free Pilot</span>
-            Running a 24-hour compliance audit on up to 10 of your subcontractor COIs at zero cost.
-            <a href="#audit-modal-trigger" onclick="openAuditModal()" class="underline font-bold hover:text-white/80 transition ml-1">Claim Free Audit &rarr;</a>
-        </span>
+  <header class="site-header">
+    <div class="wrap header-row">
+      <a class="logo" href="/" aria-label="CertiFlow home">
+        <svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M7 3h13l6 6v20H7z" fill="#fff" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M20 3v6h6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M11 18.5l3.5 3.5 7-7.5" fill="none" stroke="#17804a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>CertiFlow</span>
+      </a>
+      <nav class="nav" aria-label="Main">
+        <a href="#checks">What we check</a>
+        <a href="#process">How it works</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <a class="btn btn-small" href="#request">Get a free audit</a>
     </div>
+  </header>
 
-    <!-- Navigation Bar -->
-    <nav class="sticky top-0 z-40 bg-navy-950/80 backdrop-blur-md border-b border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <!-- Logo -->
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-teal-400 flex items-center justify-center shadow-lg shadow-brand-500/20">
-                        <i class="fa-solid fa-shield-halved text-white text-xl"></i>
-                    </div>
-                    <div>
-                        <span class="text-2xl font-black tracking-tight text-white">Certi<span class="text-brand-500">Flow</span></span>
-                        <span class="hidden sm:inline-block text-[10px] uppercase font-bold text-slate-400 bg-slate-800/80 px-2 py-0.5 rounded ml-2 border border-slate-700">COI Compliance</span>
-                    </div>
-                </div>
-
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
-                    <a href="#how-it-works" class="hover:text-white transition">How It Works</a>
-                    <a href="#interactive-demo" class="hover:text-white transition">Live Auditor Demo</a>
-                    <a href="#comparison" class="hover:text-white transition">Why Not Spreadsheets?</a>
-                    <a href="#pricing" class="hover:text-white transition">Pricing</a>
-                    <a href="#faq" class="hover:text-white transition">FAQ</a>
-                </div>
-
-                <!-- CTA Button -->
-                <div class="flex items-center gap-4">
-                    <button onclick="openAuditModal()" class="bg-brand-600 hover:bg-brand-500 text-white font-semibold text-sm px-5 py-2.5 rounded-lg shadow-lg shadow-brand-600/25 transition duration-150 flex items-center gap-2">
-                        <i class="fa-solid fa-file-shield text-brand-200"></i>
-                        <span>Start Free Audit</span>
-                    </button>
-                </div>
-            </div>
+  <main id="main">
+    <!-- Hero: the reviewed certificate is the centrepiece -->
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <p class="kicker">For commercial general contractors with 25–100 subs</p>
+          <h1>Find the missing endorsement before your carrier's auditor does.</h1>
+          <p class="lede">Send us 5–10 subcontractor certificates. Within 24 hours you get a one-page gap report: expired policies, low limits, and any missing CG&nbsp;20&nbsp;10, CG&nbsp;20&nbsp;37 or waiver of subrogation endorsements. Free, with broker notices already drafted.</p>
+          <div class="hero-actions">
+            <a class="btn" href="#request">Get a free audit</a>
+            <a class="btn btn-quiet" href="#review">See a sample review</a>
+          </div>
+          <p class="fineprint">No software to install. We work from the PDFs you already have.</p>
         </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <section class="relative pt-16 pb-24 overflow-hidden">
-        <!-- Background Glows -->
-        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-brand-500/10 blur-[130px] rounded-full pointer-events-none"></div>
-        <div class="absolute top-1/3 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[300px] bg-teal-500/10 blur-[120px] rounded-full pointer-events-none"></div>
+        <div class="review" id="review">
+          <div class="tabs" role="tablist" aria-label="Sample certificates">
+            <button role="tab" id="tab-framing" aria-controls="sheet" aria-selected="true" data-scenario="framing">Framing sub</button>
+            <button role="tab" id="tab-hvac" aria-controls="sheet" aria-selected="false" tabindex="-1" data-scenario="hvac">HVAC sub</button>
+            <button role="tab" id="tab-roofing" aria-controls="sheet" aria-selected="false" tabindex="-1" data-scenario="roofing">Roofing sub</button>
+          </div>
 
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-            
-            <!-- Category Badge -->
-            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-800/80 border border-slate-700 text-xs font-semibold text-brand-400 mb-8 shadow-sm">
-                <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
-                Built for Commercial General Contractors ($3M–$25M Volume)
+          <article class="sheet" id="sheet" role="tabpanel" aria-labelledby="tab-framing" aria-live="polite">
+            <header class="sheet-head">
+              <div>
+                <div class="sheet-title">Certificate of liability insurance</div>
+                <div class="sheet-sub">ACORD 25 · sample, fictional data</div>
+              </div>
+              <div class="stamp" data-field="stamp">Action needed</div>
+            </header>
+
+            <dl class="sheet-parties">
+              <div><dt>Producer (broker)</dt><dd data-field="broker">Mesa Ridge Insurance Group</dd></div>
+              <div><dt>Insured</dt><dd data-field="insured">Lone Pine Framing LLC</dd></div>
+              <div><dt>Certificate holder</dt><dd>Harbor &amp; Main Builders</dd></div>
+            </dl>
+
+            <table class="coverages">
+              <caption class="visually-hidden">Coverages on the certificate and whether each meets the project requirement</caption>
+              <thead><tr><th scope="col">Coverage</th><th scope="col">Expires</th><th scope="col">Limits</th><th scope="col"><span class="visually-hidden">Result</span></th></tr></thead>
+              <tbody data-field="coverages"></tbody>
+            </table>
+
+            <div class="endorsements">
+              <div class="endorse-label">Endorsement pages attached</div>
+              <ul data-field="endorsements"></ul>
             </div>
 
-            <!-- Hero Headline -->
-            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white max-w-4xl mx-auto leading-[1.15]">
-                Never let an uninsured subcontractor step on your jobsite.
-            </h1>
+            <p class="margin-note" data-field="note"></p>
+          </article>
 
-            <!-- Subtitle -->
-            <p class="mt-6 text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed">
-                Automatically extract <span class="text-white font-semibold">ACORD 25</span> policy limits, verify complex <span class="text-white font-semibold">CG 20 10 / CG 20 37</span> endorsements, and automate broker follow-ups before your annual carrier audit.
-            </p>
-
-            <!-- Dual CTAs -->
-            <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-                <button onclick="openAuditModal()" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-base shadow-xl shadow-brand-600/30 transition transform hover:-translate-y-0.5 flex items-center justify-center gap-3">
-                    <i class="fa-solid fa-cloud-arrow-up"></i>
-                    <span>Get a Free 5-Subcontractor Audit</span>
-                </button>
-                <a href="#interactive-demo" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-slate-800/90 hover:bg-slate-700 text-slate-200 font-semibold text-base border border-slate-700 transition flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-play text-brand-400"></i>
-                    <span>Test the Live Auditor Demo</span>
-                </a>
+          <div class="notice">
+            <div class="notice-head">
+              <span>Drafted notice to the broker</span>
+              <button type="button" class="link-btn" id="copy-notice">Copy text</button>
             </div>
-
-            <!-- Social Proof Metrics -->
-            <div class="mt-16 pt-10 border-t border-slate-800/80 grid grid-cols-2 md:grid-cols-4 gap-6 text-left max-w-4xl mx-auto">
-                <div class="p-4 rounded-xl bg-slate-900/50 border border-slate-800">
-                    <div class="text-2xl lg:text-3xl font-extrabold text-brand-400">$0</div>
-                    <div class="text-xs text-slate-400 mt-1 font-medium">Insurance audit penalties & unearned premium clawbacks</div>
-                </div>
-                <div class="p-4 rounded-xl bg-slate-900/50 border border-slate-800">
-                    <div class="text-2xl lg:text-3xl font-extrabold text-white">10–15 hrs</div>
-                    <div class="text-xs text-slate-400 mt-1 font-medium">Saved per week in manual broker follow-up calls</div>
-                </div>
-                <div class="p-4 rounded-xl bg-slate-900/50 border border-slate-800">
-                    <div class="text-2xl lg:text-3xl font-extrabold text-brand-400">100%</div>
-                    <div class="text-xs text-slate-400 mt-1 font-medium">ACORD 25 & endorsement form extraction accuracy</div>
-                </div>
-                <div class="p-4 rounded-xl bg-slate-900/50 border border-slate-800">
-                    <div class="text-2xl lg:text-3xl font-extrabold text-white">$49/mo</div>
-                    <div class="text-xs text-slate-400 mt-1 font-medium">Simple flat monthly pricing vs. $5,000+ enterprise lock-in</div>
-                </div>
-            </div>
-
+            <pre class="notice-body" data-field="notice"></pre>
+          </div>
         </div>
+      </div>
     </section>
 
-    <!-- The Problem / Contrast Section -->
-    <section class="py-20 bg-slate-900/40 border-y border-slate-800" id="comparison">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <h2 class="text-xs font-bold uppercase tracking-wider text-brand-400">The Compliance Blindspot</h2>
-                <p class="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                    Why spreadsheets and calendar alerts are failing General Contractors
-                </p>
-                <p class="mt-4 text-slate-400 text-base">
-                    When a jobsite accident happens or your commercial carrier performs their annual audit, finding out a subcontractor had an expired policy or missing endorsement is already too late.
-                </p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- Trap 1 -->
-                <div class="gradient-border rounded-2xl p-8 flex flex-col justify-between">
-                    <div>
-                        <div class="w-12 h-12 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400 mb-6 text-xl">
-                            <i class="fa-solid fa-file-excel"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-3">The Multi-Tab Excel Trap</h3>
-                        <p class="text-slate-400 text-sm leading-relaxed">
-                            Office staff manually log expiration dates into a spreadsheet. But spreadsheets cannot read whether the actual <strong class="text-slate-200">CG 20 10 (Ongoing Operations)</strong> or <strong class="text-slate-200">CG 20 37 (Completed Operations)</strong> forms were attached to the PDF.
-                        </p>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-slate-800 text-xs text-rose-400 font-semibold flex items-center gap-2">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                        <span>Leaves GC personally liable in injury lawsuits</span>
-                    </div>
-                </div>
-
-                <!-- Trap 2 -->
-                <div class="gradient-border rounded-2xl p-8 flex flex-col justify-between">
-                    <div>
-                        <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-6 text-xl">
-                            <i class="fa-solid fa-comments"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-3">The Broker Phone-Tag Cycle</h3>
-                        <p class="text-slate-400 text-sm leading-relaxed">
-                            When policies lapse, office staff waste 2 hours drafting emails and calling 40 different commercial brokers. Brokers ignore generic requests because project requirements aren't explicitly detailed.
-                        </p>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-slate-800 text-xs text-amber-400 font-semibold flex items-center gap-2">
-                        <i class="fa-solid fa-clock"></i>
-                        <span>10–15 hours/week of wasted administrative labor</span>
-                    </div>
-                </div>
-
-                <!-- Trap 3 -->
-                <div class="gradient-border rounded-2xl p-8 flex flex-col justify-between">
-                    <div>
-                        <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 mb-6 text-xl">
-                            <i class="fa-solid fa-building-columns"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-3">Enterprise Software Extortion</h3>
-                        <p class="text-slate-400 text-sm leading-relaxed">
-                            Tools like myCOI and Procore charge <strong class="text-slate-200">$5,000–$10,000/year</strong>, require mandatory 60-minute sales demos, enforce minimum vendor quotas, and take months to onboard.
-                        </p>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-slate-800 text-xs text-purple-400 font-semibold flex items-center gap-2">
-                        <i class="fa-solid fa-money-bill-wave"></i>
-                        <span>Unjustified overhead for mid-market builders</span>
-                    </div>
-                </div>
-            </div>
+    <!-- Problem -->
+    <section class="section" id="checks">
+      <div class="wrap">
+        <div class="section-intro">
+          <h2>A spreadsheet tracks the date. The risk is in the endorsement pages.</h2>
+          <p>Most tracking stops at the expiration date on page one. Whether your company is actually named as additional insured lives in the endorsement pages behind the ACORD 25, and that's where claims and premium audits get decided.</p>
         </div>
+
+        <div class="compare">
+          <figure class="compare-col">
+            <figcaption>What the tracking spreadsheet shows</figcaption>
+            <table class="xls" aria-label="Example spreadsheet row">
+              <thead><tr><th>Subcontractor</th><th>GL expires</th><th>On file</th></tr></thead>
+              <tbody><tr><td>Lone Pine Framing</td><td>03/14/2027</td><td>Yes</td></tr></tbody>
+            </table>
+            <p>Looks fine. Nobody follows up.</p>
+          </figure>
+          <figure class="compare-col">
+            <figcaption>What the certificate actually contains</figcaption>
+            <ul class="pages">
+              <li><span>ACORD 25, page 1</span><span class="ok">Limits meet spec</span></li>
+              <li><span>CG 20 10 ongoing operations</span><span class="ok">Attached</span></li>
+              <li class="miss"><span>CG 20 37 completed operations</span><span class="bad">Not attached</span></li>
+              <li><span>CG 24 04 waiver of subrogation</span><span class="ok">Attached</span></li>
+            </ul>
+            <p>A defect claim after turnover would not reach this sub's policy.</p>
+          </figure>
+        </div>
+
+        <h3 class="checks-title">Every certificate is checked against your requirements</h3>
+        <dl class="checks">
+          <div><dt>General liability limits</dt><dd>Each occurrence and aggregate against what your prime contract requires, commonly $1M / $2M.</dd></div>
+          <div><dt>Additional insured, ongoing operations</dt><dd>CG 20 10 (or the carrier's equivalent form) naming your company for work in progress.</dd></div>
+          <div><dt>Additional insured, completed operations</dt><dd>CG 20 37 or equivalent, which keeps you covered for claims that surface after handover.</dd></div>
+          <div><dt>Waiver of subrogation</dt><dd>CG 24 04 on general liability, and WC 00 03 13 on workers' comp, when your contract calls for them.</dd></div>
+          <div><dt>Workers' comp and employers' liability</dt><dd>Active statutory coverage, plus employers' liability limits, for every crew on site.</dd></div>
+          <div><dt>Dates, auto and umbrella</dt><dd>Lapsed or soon-to-lapse policies, commercial auto CSL, and umbrella limits where required.</dd></div>
+        </dl>
+      </div>
     </section>
 
-    <!-- Interactive Live Auditor Demo Sandbox -->
-    <section class="py-24 relative" id="interactive-demo">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-12">
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-brand-500/10 border border-brand-500/30 text-xs font-bold text-brand-400 mb-4">
-                    <i class="fa-solid fa-bolt"></i> Interactive Demonstration
-                </span>
-                <h2 class="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
-                    See How CertiFlow Audits an ACORD 25 in 3 Seconds
-                </h2>
-                <p class="mt-3 text-slate-300 text-base">
-                    Click a scenario below to simulate how our compliance engine cross-checks coverage limits, identifies missing endorsements, and generates broker escalation emails.
-                </p>
-            </div>
-
-            <!-- Demo Simulation Controller -->
-            <div class="max-w-5xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden">
-                <!-- Top Tabs / Scenario Buttons -->
-                <div class="bg-slate-950 p-4 border-b border-slate-800 flex flex-wrap gap-3 items-center justify-between">
-                    <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                        Select Test Scenario:
-                    </div>
-                    <div class="flex flex-wrap gap-2">
-                        <button onclick="loadScenario('compliant')" id="btn-compliant" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-brand-600 text-white shadow-sm flex items-center gap-1.5">
-                            <i class="fa-solid fa-circle-check"></i> Scenario A: Compliant HVAC Sub
-                        </button>
-                        <button onclick="loadScenario('missing_endorsement')" id="btn-missing" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center gap-1.5">
-                            <i class="fa-solid fa-triangle-exclamation text-amber-400"></i> Scenario B: Missing CG 20 37 Endorsement
-                        </button>
-                        <button onclick="loadScenario('expired_wc')" id="btn-expired" class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center gap-1.5">
-                            <i class="fa-solid fa-circle-xmark text-rose-400"></i> Scenario C: Lapsed Workers Comp
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Simulation Output Body -->
-                <div class="p-6 md:p-8 grid lg:grid-cols-12 gap-8">
-                    <!-- Left Column: Certificate Meta -->
-                    <div class="lg:col-span-5 space-y-6">
-                        <div class="bg-slate-950/80 p-5 rounded-xl border border-slate-800">
-                            <div class="flex items-center justify-between mb-4">
-                                <span class="text-xs uppercase font-bold text-slate-400 tracking-wider">Document Scanned</span>
-                                <span class="text-[11px] font-mono bg-slate-800 text-slate-300 px-2 py-0.5 rounded">ACORD 25 (2016/03)</span>
-                            </div>
-
-                            <div class="space-y-3 text-sm">
-                                <div>
-                                    <div class="text-xs text-slate-500 font-medium">Named Insured Subcontractor:</div>
-                                    <div id="demo-sub-name" class="font-bold text-white text-base">Apex Mechanical & HVAC Services LLC</div>
-                                </div>
-                                <div>
-                                    <div class="text-xs text-slate-500 font-medium">Insurance Broker (Producer):</div>
-                                    <div id="demo-broker" class="text-slate-300 font-medium">Wortham & Gallagher Risk Partners</div>
-                                    <div id="demo-broker-email" class="text-xs text-brand-400 font-mono">commercial@wortham-ins.com</div>
-                                </div>
-                                <div>
-                                    <div class="text-xs text-slate-500 font-medium">Certificate Holder:</div>
-                                    <div class="text-slate-300 font-medium">Novel Builders LLC (General Contractor)</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Rule Verification Checklist -->
-                        <div class="bg-slate-950/80 p-5 rounded-xl border border-slate-800">
-                            <div class="text-xs uppercase font-bold text-slate-400 tracking-wider mb-4">Contractor Rule Validation</div>
-                            <div class="space-y-3 text-xs" id="demo-checklist">
-                                <!-- Dynamic check items -->
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Right Column: Audit Findings & Automated Action -->
-                    <div class="lg:col-span-7 flex flex-col justify-between space-y-6">
-                        <!-- Status Banner -->
-                        <div id="demo-status-card" class="p-5 rounded-xl border transition-all">
-                            <!-- Dynamic Status -->
-                        </div>
-
-                        <!-- Broker Auto-Email Generator Box -->
-                        <div class="bg-slate-950 p-5 rounded-xl border border-slate-800">
-                            <div class="flex items-center justify-between mb-3">
-                                <div class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
-                                    <i class="fa-solid fa-paper-plane text-brand-400"></i>
-                                    <span>Automated Broker Resolution Dispatch</span>
-                                </div>
-                                <button onclick="copyBrokerEmail()" id="btn-copy" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded transition flex items-center gap-1">
-                                    <i class="fa-regular fa-copy"></i>
-                                    <span>Copy Template</span>
-                                </button>
-                            </div>
-                            <div class="bg-slate-900 p-4 rounded-lg border border-slate-800/80 font-mono text-xs text-slate-300 whitespace-pre-wrap leading-relaxed" id="demo-broker-message">
-                                <!-- Dynamic Message -->
-                            </div>
-                        </div>
-
-                        <!-- GC Outcome -->
-                        <div class="flex items-center justify-between p-4 rounded-xl bg-slate-950 border border-slate-800 text-xs">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-lg bg-brand-500/10 text-brand-400 flex items-center justify-center font-bold">
-                                    <i class="fa-solid fa-database"></i>
-                                </div>
-                                <div>
-                                    <div class="text-white font-semibold">Audit Record Archived</div>
-                                    <div class="text-slate-400">Time-stamped audit defense log ready for annual carrier audit</div>
-                                </div>
-                            </div>
-                            <button onclick="openAuditModal()" class="bg-brand-600 hover:bg-brand-500 text-white font-bold px-4 py-2 rounded-lg transition">
-                                Audit Your Files
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- Process: a real sequence, so numbering is earned -->
+    <section class="section section-band" id="process">
+      <div class="wrap">
+        <div class="section-intro">
+          <h2>How the free audit works</h2>
+          <p>It takes about ten minutes of your office's time.</p>
         </div>
+        <ol class="steps">
+          <li>
+            <h3>Request the audit</h3>
+            <p>Fill in the short form below. We reply within one business day with where to send files.</p>
+          </li>
+          <li>
+            <h3>Send 5–10 certificates</h3>
+            <p>Forward the ACORD 25s and endorsement pages you already have on file, plus your standard insurance requirements if you have them written down.</p>
+          </li>
+          <li>
+            <h3>Get your gap report</h3>
+            <p>Within 24 hours: a one-page report per sub, ranked by risk, with a ready-to-send deficiency notice for each broker.</p>
+          </li>
+        </ol>
+
+        <div class="roadmap">
+          <h3>What we're building with our first contractors</h3>
+          <p>The audit is the first piece of CertiFlow. Contractors who join the founding pilot help shape the portal around it:</p>
+          <ul>
+            <li><strong>Upload links for subs and brokers.</strong> They drop in a PDF without making an account.</li>
+            <li><strong>Renewal follow-up.</strong> Brokers hear from us 30 and 14 days before a policy lapses.</li>
+            <li><strong>Audit binder.</strong> Every certificate and endorsement, time-stamped, exportable when your carrier asks.</li>
+          </ul>
+        </div>
+      </div>
     </section>
 
-    <!-- How It Works Section -->
-    <section class="py-20 bg-slate-900/30 border-y border-slate-800" id="how-it-works">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <h2 class="text-xs font-bold uppercase tracking-wider text-brand-400">Frictionless 3-Step Workflow</h2>
-                <p class="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                    Zero software installation. No subcontractor logins.
-                </p>
-                <p class="mt-4 text-slate-400 text-base">
-                    Subcontractors and brokers hate logging into heavy contractor portals. CertiFlow uses secure magic links that take 10 seconds to upload.
-                </p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- Step 1 -->
-                <div class="gradient-border rounded-2xl p-8 relative">
-                    <div class="w-10 h-10 rounded-full bg-brand-600 text-white font-black flex items-center justify-center text-lg mb-6 shadow-lg shadow-brand-600/30">
-                        1
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-3">Set Project Insurance Spec</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed">
-                        Configure your jobsite rules once: General Liability aggregate, Workers Comp statutory limits, and required endorsement forms (e.g. CG 20 10 / CG 20 37 / Waiver of Subrogation).
-                    </p>
-                </div>
-
-                <!-- Step 2 -->
-                <div class="gradient-border rounded-2xl p-8 relative">
-                    <div class="w-10 h-10 rounded-full bg-brand-600 text-white font-black flex items-center justify-center text-lg mb-6 shadow-lg shadow-brand-600/30">
-                        2
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-3">Passwordless Magic Link</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed">
-                        Subcontractors or their commercial insurance brokers receive a direct magic link. They drag and drop their ACORD 25 PDF in seconds without creating a password or downloading an app.
-                    </p>
-                </div>
-
-                <!-- Step 3 -->
-                <div class="gradient-border rounded-2xl p-8 relative">
-                    <div class="w-10 h-10 rounded-full bg-brand-600 text-white font-black flex items-center justify-center text-lg mb-6 shadow-lg shadow-brand-600/30">
-                        3
-                    </div>
-                    <h3 class="text-xl font-bold text-white mb-3">Automated Resolution Loop</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed">
-                        If compliant, the vendor is marked green with an audit badge. If deficient, CertiFlow automatically drafts and routes an exact deficiency notice directly to the insurance broker listed in Box 1.
-                    </p>
-                </div>
-            </div>
+    <!-- Pricing -->
+    <section class="section" id="pricing">
+      <div class="wrap">
+        <div class="section-intro">
+          <h2>Pricing</h2>
+          <p>The audit is free and carries no obligation. When the portal opens, it's a flat monthly price based on how many active subcontractors you track. No per-seat fees, no annual contract.</p>
         </div>
+        <div class="price-table" role="table" aria-label="Planned monthly pricing">
+          <div class="price-row price-head" role="row">
+            <span role="columnheader">Plan</span><span role="columnheader">Active subs</span><span role="columnheader">Per month</span><span role="columnheader">Includes</span>
+          </div>
+          <div class="price-row" role="row">
+            <span role="cell" class="plan">Starter</span><span role="cell">Up to 25</span><span role="cell" class="amount">$49</span><span role="cell">Certificate and endorsement checks, broker notices, audit export</span>
+          </div>
+          <div class="price-row" role="row">
+            <span role="cell" class="plan">Growth</span><span role="cell">Up to 75</span><span role="cell" class="amount">$99</span><span role="cell">Everything in Starter, plus per-project requirements and 30/14-day renewal follow-up</span>
+          </div>
+          <div class="price-row" role="row">
+            <span role="cell" class="plan">Pro</span><span role="cell">Up to 200</span><span role="cell" class="amount">$199</span><span role="cell">Everything in Growth, plus unlimited users and CSV export for Procore</span>
+          </div>
+        </div>
+        <p class="fineprint">Planned launch pricing. Founding pilot terms are agreed one-to-one.</p>
+      </div>
     </section>
 
-    <!-- Pricing Section -->
-    <section class="py-24" id="pricing">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto mb-16">
-                <h2 class="text-xs font-bold uppercase tracking-wider text-brand-400">Transparent & Predictable</h2>
-                <p class="mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                    No enterprise sales demos. No per-seat pricing.
-                </p>
-                <p class="mt-4 text-slate-400 text-base">
-                    Choose the plan that fits your active subcontractor volume. Cancel anytime.
-                </p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-                <!-- Starter Tier -->
-                <div class="gradient-border rounded-2xl p-8 flex flex-col justify-between">
-                    <div>
-                        <div class="text-sm font-bold text-slate-400 uppercase tracking-wider">Starter Builder</div>
-                        <div class="mt-4 flex items-baseline">
-                            <span class="text-4xl font-black text-white">$49</span>
-                            <span class="ml-2 text-sm text-slate-400 font-medium">/ month</span>
-                        </div>
-                        <p class="mt-3 text-xs text-slate-400">Ideal for boutique GCs and custom builders.</p>
-
-                        <ul class="mt-8 space-y-3 text-xs text-slate-300">
-                            <li class="flex items-center gap-2.5">
-                                <i class="fa-solid fa-check text-brand-400"></i>
-                                <span>Up to <strong>25 Active Subcontractors</strong></span>
-                            </li>
-                            <li class="flex items-center gap-2.5">
-                                <i class="fa-solid fa-check text-brand-400"></i>
-                                <span>Automated ACORD 25 extraction</span>
-                            </li>
-                            <li class="flex items-center gap-2.5">
-                                <i class="fa-solid fa-check text-brand-400"></i>
-                                <span>CG 20 10 & CG 20 37 verification</span>
-                            </li>
-                            <li class="flex items-center gap-2.5">
-                                <i class="fa-solid fa-check text-brand-400"></i>
-                                <span>Automated broker deficiency emails</span>
-                            </li>
-                            <li class="flex items-center gap-2.5">
-                                <i class="fa-solid fa-check text-brand-400"></i>
-                                <span>Annual carrier audit export (CSV/PDF)</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <button onclick="openAuditModal('Starter')" class="mt-8 w-full py-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition border border-slate-700">
-                        Start 14-Day Free Trial
-                    </button>
-                </div>
-
-                <!-- Growth Tier (Featured) -->
-                <div class="relative rounded-2xl p-8 bg-gradient-to-b from-slate-900 to-navy-950 border-2 border-brand-500 shadow-2xl shadow-brand-500/10 flex flex-col justify-between">
-                    <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-brand-500 text-slate-950 text-[11px] font-black uppercase tracking-wider px-3 py-1 rounded-full shadow">
-                        Most Popular for Commercial GCs
-                    </div>
-                    <div>
-                        <div class="text-sm font-bold text-brand-400 uppercase tracking-wider">Commercial Growth</div>
-                        <div class="mt-4 flex items-baseline">
-                            <span class="text-4xl font-black text-white">$99</span>
-                            <span class="ml-2 text-sm text-slate-400 font-medium">/ month</span>
-                        </div>
-                        <p class="mt-3 text-xs text-slate-400">For mid-market GCs ($5M–$15M volume) managing multiple project sites.</p>
-
-                        <ul class="mt-8 space-y-3 text-xs text-slate-200">
-                            <li class="flex items-center gap-2.5">
-                                <i class="fa-solid fa-check text-brand-400"></i>
-                                <span>Up to <strong>75 Active Subcontractors</strong></span>
-                            </li>
-                            <li class="flex items-center gap-2.5">
-                                <i class="fa-solid fa-check text-brand-400"></i>
-                                <span>Everything in Starter</span>
-                            </li>
-                            <li class="flex items-center gap-2.5">
-                                <i class="fa-solid fa-check text-brand-400"></i>
-                                <span>Multi-project insurance spec templates</span>
-                            </li>
-                            <li class="flex items-center gap-2.5">
-                                <i class="fa-solid fa-check text-brand-400"></i>
-                                <span>Automated 30/60-day renewal escalations</span>
-                            </li>
-                            <li class="flex items-center gap-2.5">
-                                <i class="fa-solid fa-check text-brand-400"></i>
-                                <span>Custom company branding on magic links</span>
-                            </li>
-                            <li class="flex items-center gap-2.5">
-                                <i class="fa-solid fa-check text-brand-400"></i>
-                                <span>Priority human compliance review queue</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <button onclick="openAuditModal('Growth')" class="mt-8 w-full py-3 rounded-lg bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs transition shadow-lg shadow-brand-600/30">
-                        Start 14-Day Free Trial
-                    </button>
-                </div>
-
-                <!-- Pro Tier -->
-                <div class="gradient-border rounded-2xl p-8 flex flex-col justify-between">
-                    <div>
-                        <div class="text-sm font-bold text-slate-400 uppercase tracking-wider">Commercial Pro</div>
-                        <div class="mt-4 flex items-baseline">
-                            <span class="text-4xl font-black text-white">$199</span>
-                            <span class="ml-2 text-sm text-slate-400 font-medium">/ month</span>
-                        </div>
-                        <p class="mt-3 text-xs text-slate-400">For heavy commercial builders and trade contractors managing 100+ subs.</p>
-
-                        <ul class="mt-8 space-y-3 text-xs text-slate-300">
-                            <li class="flex items-center gap-2.5">
-                                <i class="fa-solid fa-check text-brand-400"></i>
-                                <span>Up to <strong>200 Active Subcontractors</strong></span>
-                            </li>
-                            <li class="flex items-center gap-2.5">
-                                <i class="fa-solid fa-check text-brand-400"></i>
-                                <span>Everything in Commercial Growth</span>
-                            </li>
-                            <li class="flex items-center gap-2.5">
-                                <i class="fa-solid fa-check text-brand-400"></i>
-                                <span>Unlimited user seats & project managers</span>
-                            </li>
-                            <li class="flex items-center gap-2.5">
-                                <i class="fa-solid fa-check text-brand-400"></i>
-                                <span>Direct webhook & Procore CSV sync</span>
-                            </li>
-                            <li class="flex items-center gap-2.5">
-                                <i class="fa-solid fa-check text-brand-400"></i>
-                                <span>Dedicated compliance account manager</span>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <button onclick="openAuditModal('Pro')" class="mt-8 w-full py-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition border border-slate-700">
-                        Start 14-Day Free Trial
-                    </button>
-                </div>
-            </div>
-        </div>
+    <!-- FAQ -->
+    <section class="section section-band" id="faq">
+      <div class="wrap narrow">
+        <h2>Questions</h2>
+        <details>
+          <summary>Is the audit really free?</summary>
+          <p>Yes. We review up to 10 of your subcontractor certificates at no cost. If the report is useful, we'll talk about the pilot. If not, you keep the report.</p>
+        </details>
+        <details>
+          <summary>Who reviews the certificates?</summary>
+          <p>Software reads the ACORD 25 and the endorsement pages, and a person checks every result before it goes in your report. Anything unclear is flagged as unclear, not guessed.</p>
+        </details>
+        <details>
+          <summary>What happens to the documents we send?</summary>
+          <p>We use them only to prepare your report. We don't share them, and we delete them when you ask. See our <a href="/privacy">privacy notice</a>.</p>
+        </details>
+        <details>
+          <summary>Do our subs or their brokers need to do anything?</summary>
+          <p>Not for the audit. We work from the certificates you already have. The drafted broker notices are yours to send, edit or ignore.</p>
+        </details>
+        <details>
+          <summary>Is this insurance or legal advice?</summary>
+          <p>No. CertiFlow checks documents against the requirements you give us. It isn't an insurance agency, and it doesn't replace your broker or attorney on coverage questions.</p>
+        </details>
+      </div>
     </section>
 
-    <!-- FAQ Section -->
-    <section class="py-20 bg-slate-900/30 border-t border-slate-800" id="faq">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="text-xs font-bold uppercase tracking-wider text-brand-400">Frequently Asked Questions</h2>
-                <p class="mt-2 text-3xl font-bold tracking-tight text-white">Everything you need to know about CertiFlow</p>
-            </div>
-
-            <div class="space-y-4">
-                <div class="p-6 rounded-xl bg-slate-900 border border-slate-800">
-                    <h3 class="font-bold text-white text-base">Do my subcontractors or their insurance brokers need to make an account?</h3>
-                    <p class="mt-2 text-sm text-slate-400 leading-relaxed">
-                        No. Subcontractors and brokers will refuse to adopt software that requires yet another login. When you add a subcontractor, CertiFlow sends a secure magic link where they can drag and drop their ACORD 25 and endorsement PDFs in 10 seconds.
-                    </p>
-                </div>
-
-                <div class="p-6 rounded-xl bg-slate-900 border border-slate-800">
-                    <h3 class="font-bold text-white text-base">Does CertiFlow actually read policy endorsements or just expiration dates?</h3>
-                    <p class="mt-2 text-sm text-slate-400 leading-relaxed">
-                        CertiFlow audits both. Many low-cost tools and spreadsheets only track the expiration date in Box 1. CertiFlow's vision extraction engine reads attached policy pages specifically looking for critical ISO forms like CG 20 10 (Ongoing Operations), CG 20 37 (Completed Operations), and CG 24 04 (Waiver of Subrogation).
-                    </p>
-                </div>
-
-                <div class="p-6 rounded-xl bg-slate-900 border border-slate-800">
-                    <h3 class="font-bold text-white text-base">What happens when a policy is about to expire?</h3>
-                    <p class="mt-2 text-sm text-slate-400 leading-relaxed">
-                        CertiFlow initiates automated email reminders 30 days and 14 days prior to policy expiration, directed to both the subcontractor and the insurance broker listed on the original certificate. When the broker sends the updated certificate, it is automatically re-audited and archived.
-                    </p>
-                </div>
-
-                <div class="p-6 rounded-xl bg-slate-900 border border-slate-800">
-                    <h3 class="font-bold text-white text-base">How does this prepare us for our annual commercial insurance audit?</h3>
-                    <p class="mt-2 text-sm text-slate-400 leading-relaxed">
-                        At audit time, your insurance carrier demands proof that all subcontractors working on your projects carried required limits and named you as Additional Insured. CertiFlow generates a complete, 1-click audit binder with time-stamped certificates and endorsements, preventing costly unearned premium penalties.
-                    </p>
-                </div>
-            </div>
+    <!-- Request form -->
+    <section class="section request" id="request">
+      <div class="wrap request-grid">
+        <div class="request-copy">
+          <h2>Request a free audit</h2>
+          <p>Tell us who you are and roughly how many subs you manage. We'll reply within one business day with where to send 5–10 certificates.</p>
+          <p class="fineprint">Prefer email? Write to <a href="mailto:support@certiflowapp.com?subject=Free%20COI%20audit">support@certiflowapp.com</a>.</p>
         </div>
+
+        <form class="form" id="audit-form" novalidate>
+          <div class="field">
+            <label for="f-company">Company name</label>
+            <input id="f-company" name="company" type="text" autocomplete="organization" required maxlength="120">
+          </div>
+          <div class="field-pair">
+            <div class="field">
+              <label for="f-name">Your name</label>
+              <input id="f-name" name="name" type="text" autocomplete="name" required maxlength="120">
+            </div>
+            <div class="field">
+              <label for="f-email">Work email</label>
+              <input id="f-email" name="email" type="email" autocomplete="email" required maxlength="200">
+            </div>
+          </div>
+          <div class="field-pair">
+            <div class="field">
+              <label for="f-phone">Phone <span class="opt">(optional)</span></label>
+              <input id="f-phone" name="phone" type="tel" autocomplete="tel" maxlength="40">
+            </div>
+            <div class="field">
+              <label for="f-subs">Active subcontractors</label>
+              <select id="f-subs" name="subs">
+                <option value="under-25">Fewer than 25</option>
+                <option value="25-50" selected>25–50</option>
+                <option value="50-100">50–100</option>
+                <option value="100+">More than 100</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="f-notes">Anything we should know? <span class="opt">(optional)</span></label>
+            <textarea id="f-notes" name="notes" rows="3" maxlength="2000" placeholder="For example: our carrier audit is in March"></textarea>
+          </div>
+          <div class="hp" aria-hidden="true">
+            <label for="f-website">Leave this empty</label>
+            <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off">
+          </div>
+          <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+          <button class="btn btn-block" type="submit" id="form-submit">Request my free audit</button>
+          <p class="fineprint">We'll only use these details to arrange your audit.</p>
+        </form>
+      </div>
     </section>
+  </main>
 
-    <!-- Footer -->
-    <footer class="bg-navy-950 py-12 border-t border-slate-800 text-xs text-slate-500">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
-            <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold">
-                    <i class="fa-solid fa-shield-halved"></i>
-                </div>
-                <span class="text-white font-bold text-base">CertiFlow</span>
-                <span class="text-slate-500 ml-2">© 2026 CertiFlow Inc. All rights reserved.</span>
-            </div>
-            <div class="flex gap-6">
-                <a href="#interactive-demo" class="hover:text-slate-300">Live Demo</a>
-                <a href="#pricing" class="hover:text-slate-300">Pricing</a>
-                <a href="#faq" class="hover:text-slate-300">FAQ</a>
-                <a href="mailto:support@certiflowapp.com" class="hover:text-slate-300">Contact Support</a>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Interactive Free Audit Modal -->
-    <div id="audit-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 sm:p-8 relative shadow-2xl">
-            <button onclick="closeAuditModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white text-lg">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
-            <div class="text-center mb-6">
-                <div class="w-12 h-12 rounded-xl bg-brand-600/20 text-brand-400 flex items-center justify-center mx-auto mb-3 text-xl">
-                    <i class="fa-solid fa-file-shield"></i>
-                </div>
-                <h3 class="text-2xl font-bold text-white">Get Your Free 24-Hour COI Audit</h3>
-                <p class="text-slate-400 text-xs mt-1">
-                    Send 5–10 subcontractor certificates. We'll return an Executive Gap Report identifying expired limits and missing endorsements before your carrier audit.
-                </p>
-            </div>
-
-            <form onsubmit="handleAuditSubmit(event)" class="space-y-4 text-xs">
-                <div>
-                    <label class="block text-slate-300 font-semibold mb-1">General Contracting Company Name</label>
-                    <input type="text" required id="form-company" placeholder="e.g. Novel Builders LLC" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-brand-500">
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-slate-300 font-semibold mb-1">Your Full Name</label>
-                        <input type="text" required id="form-name" placeholder="John Doe" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-brand-500">
-                    </div>
-                    <div>
-                        <label class="block text-slate-300 font-semibold mb-1">Work Email</label>
-                        <input type="email" required id="form-email" placeholder="john@company.com" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2.5 text-white placeholder-slate-600 focus:outline-none focus:border-brand-500">
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-slate-300 font-semibold mb-1">Active Subcontractor Count</label>
-                    <select id="form-sub-count" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3.5 py-2.5 text-white focus:outline-none focus:border-brand-500">
-                        <option value="10-25">10 to 25 Subcontractors</option>
-                        <option value="25-50" selected>25 to 50 Subcontractors</option>
-                        <option value="50-100">50 to 100 Subcontractors</option>
-                        <option value="100+">100+ Subcontractors</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-slate-300 font-semibold mb-1">Upload Sample Subcontractor PDF (Optional for instant check)</label>
-                    <div class="border-2 border-dashed border-slate-800 hover:border-brand-500/50 rounded-xl p-4 text-center cursor-pointer bg-slate-950/50">
-                        <i class="fa-solid fa-cloud-arrow-up text-brand-400 text-xl mb-1"></i>
-                        <p class="text-slate-400">Drag & drop ACORD 25 PDF here, or <span class="text-brand-400 underline">browse</span></p>
-                        <span class="text-[10px] text-slate-600">PDF up to 10MB</span>
-                        <input type="file" class="hidden" accept=".pdf">
-                    </div>
-                </div>
-
-                <div id="modal-success-msg" class="hidden p-3 rounded-lg bg-brand-500/10 border border-brand-500/30 text-brand-400 text-center font-semibold">
-                    Audit request submitted! Our compliance desk will email your gap report within 24 hours.
-                </div>
-
-                <button type="submit" id="btn-submit-audit" class="w-full py-3.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white font-bold transition shadow-lg shadow-brand-600/30">
-                    Submit for 24-Hour Free Audit
-                </button>
-            </form>
-        </div>
+  <footer class="site-footer">
+    <div class="wrap footer-row">
+      <span>© 2026 CertiFlow</span>
+      <a href="/privacy">Privacy</a>
+      <a href="mailto:support@certiflowapp.com">support@certiflowapp.com</a>
+      <span class="footer-note">CertiFlow reviews documents against your requirements. It is not an insurance agency and does not give legal advice.</span>
     </div>
-
-    <!-- Interactive Demo Simulation Scripts -->
-    <script>
-        const scenarios = {
-            compliant: {
-                subName: "Apex Mechanical & HVAC Services LLC",
-                broker: "Wortham & Gallagher Risk Partners",
-                brokerEmail: "commercial@wortham-ins.com",
-                status: "COMPLIANT",
-                statusBadge: "🟢 FULLY COMPLIANT (AUDIT BADGE ISSUED)",
-                statusClass: "bg-emerald-500/10 border-emerald-500/30 text-emerald-400",
-                checks: [
-                    { label: "General Liability: $1M Occurrence / $2M Aggregate", pass: true },
-                    { label: "Commercial Auto Liability: $1,000,000 CSL", pass: true },
-                    { label: "Workers Compensation: Statutory Limits ($1M)", pass: true },
-                    { label: "Additional Insured: GC Named on Endorsement CG 20 10", pass: true },
-                    { label: "Completed Operations: Endorsement CG 20 37 Attached", pass: true },
-                    { label: "Waiver of Subrogation: Form CG 24 04 Present", pass: true }
-                ],
-                findings: "All project limits and required ISO endorsements are verified. Expiration date is 8 months out. Zero action required from contractor.",
-                brokerMessage: "To: commercial@wortham-ins.com\nSubject: Verified: Apex Mechanical COI for Novel Builders LLC\n\nDear Broker Team,\n\nThe Certificate of Insurance and endorsements submitted for Apex Mechanical & HVAC Services LLC on Project 'Northwest Commercial Plaza' have been verified and approved as compliant.\n\nNext scheduled renewal check: June 15, 2027."
-            },
-            missing_endorsement: {
-                subName: "Lone Star Commercial Framing LLC",
-                broker: "Allied Texas Insurance Associates",
-                brokerEmail: "certificates@alliedtexasins.com",
-                status: "DEFICIENT",
-                statusBadge: "🟡 CRITICAL DEFICIENCY: MISSING ENDORSEMENT",
-                statusClass: "bg-amber-500/10 border-amber-500/30 text-amber-400",
-                checks: [
-                    { label: "General Liability: $1M Occurrence / $2M Aggregate", pass: true },
-                    { label: "Commercial Auto Liability: $1,000,000 CSL", pass: true },
-                    { label: "Workers Compensation: Statutory Limits ($1M)", pass: true },
-                    { label: "Additional Insured: Ongoing Operations (CG 20 10)", pass: true },
-                    { label: "Completed Operations: Form CG 20 37 Attached", pass: false },
-                    { label: "Waiver of Subrogation: Form CG 24 04 Present", pass: true }
-                ],
-                findings: "CRITICAL HOLE: General Liability limit passes, but the mandatory CG 20 37 (Completed Operations) endorsement is missing. In the event of a structural defect claim after project handover, your carrier will deny coverage.",
-                brokerMessage: "To: certificates@alliedtexasins.com\nSubject: DEFICIENCY NOTICE: Lone Star Framing COI / Novel Builders\n\nDear Allied Texas Brokerage,\n\nWe have reviewed the ACORD 25 for Lone Star Commercial Framing LLC (Policy #TX-902148). While ongoing operations are endorsed, the prime contract requires ISO Form CG 20 37 (Completed Operations) naming Novel Builders LLC as Additional Insured.\n\nPlease reply directly to this email with the attached CG 20 37 endorsement page to grant site access."
-            },
-            expired_wc: {
-                subName: "Tri-County Commercial Roofing Inc.",
-                broker: "Beacon Commercial Underwriters",
-                brokerEmail: "service@beaconunderwriters.com",
-                status: "EXPIRED",
-                statusBadge: "🔴 STOP-WORK RED FLAG: LAPSED WORKERS COMP",
-                statusClass: "bg-rose-500/10 border-rose-500/30 text-rose-400",
-                checks: [
-                    { label: "General Liability: $1M Occurrence / $2M Aggregate", pass: true },
-                    { label: "Commercial Auto Liability: $1,000,000 CSL", pass: true },
-                    { label: "Workers Compensation: Statutory Limits ($1M)", pass: false },
-                    { label: "Additional Insured: GC Named on Endorsement CG 20 10", pass: true },
-                    { label: "Completed Operations: Form CG 20 37 Attached", pass: true },
-                    { label: "Waiver of Subrogation: Form CG 24 04 Present", pass: false }
-                ],
-                findings: "IMMEDIATE TORT HAZARD: Workers Compensation policy lapsed 14 days ago. Subcontractor roofing employees on site are uninsured for occupational injury, creating direct statutory liability for the General Contractor.",
-                brokerMessage: "To: service@beaconunderwriters.com\nSubject: URGENT STOP-WORK: Lapsed Workers Comp for Tri-County Roofing\n\nDear Beacon Commercial Underwriters,\n\nOur system detected that Workers Compensation Policy #WC-44109 for Tri-County Commercial Roofing expired on September 26, 2026. Subcontractor jobsite access is currently suspended.\n\nPlease immediately forward an active Certificate of Insurance and endorsement verifying renewed workers compensation coverage."
-            }
-        };
-
-        function loadScenario(type) {
-            const data = scenarios[type];
-            document.getElementById('demo-sub-name').innerText = data.subName;
-            document.getElementById('demo-broker').innerText = data.broker;
-            document.getElementById('demo-broker-email').innerText = data.brokerEmail;
-
-            // Update Checklist
-            const checkContainer = document.getElementById('demo-checklist');
-            checkContainer.innerHTML = '';
-            data.checks.forEach(item => {
-                const icon = item.pass 
-                    ? '<i class="fa-solid fa-circle-check text-emerald-400"></i>' 
-                    : '<i class="fa-solid fa-circle-xmark text-rose-400"></i>';
-                const textColor = item.pass ? 'text-slate-300' : 'text-rose-300 font-bold';
-                checkContainer.innerHTML += `
-                    <div class="flex items-center justify-between py-1 border-b border-slate-900">
-                        <span class="${textColor}">${item.label}</span>
-                        <span>${icon}</span>
-                    </div>
-                `;
-            });
-
-            // Update Status Card
-            const statusCard = document.getElementById('demo-status-card');
-            statusCard.className = `p-5 rounded-xl border ${data.statusClass}`;
-            statusCard.innerHTML = `
-                <div class="font-extrabold text-sm mb-2 flex items-center gap-2">${data.statusBadge}</div>
-                <div class="text-xs text-slate-300 leading-relaxed">${data.findings}</div>
-            `;
-
-            // Update Broker Message
-            document.getElementById('demo-broker-message').innerText = data.brokerMessage;
-
-            // Highlight Active Button
-            ['compliant', 'missing_endorsement', 'expired_wc'].forEach(btn => {
-                const el = document.getElementById('btn-' + (btn === 'missing_endorsement' ? 'missing' : btn === 'expired_wc' ? 'expired' : 'compliant'));
-                if (btn === type) {
-                    el.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-brand-600 text-white shadow-sm flex items-center gap-1.5';
-                } else {
-                    el.className = 'px-3.5 py-1.5 rounded-lg text-xs font-bold transition bg-slate-800 text-slate-300 hover:bg-slate-700 flex items-center gap-1.5';
-                }
-            });
-        }
-
-        function copyBrokerEmail() {
-            const text = document.getElementById('demo-broker-message').innerText;
-            navigator.clipboard.writeText(text);
-            const btn = document.getElementById('btn-copy');
-            btn.innerHTML = '<i class="fa-solid fa-check text-emerald-400"></i> Copied!';
-            setTimeout(() => {
-                btn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy Template';
-            }, 2000);
-        }
-
-        // Modal Controls
-        function openAuditModal(tier = '') {
-            document.getElementById('audit-modal').classList.remove('hidden');
-        }
-
-        function closeAuditModal() {
-            document.getElementById('audit-modal').classList.add('hidden');
-        }
-
-        function handleAuditSubmit(e) {
-            e.preventDefault();
-            document.getElementById('btn-submit-audit').disabled = true;
-            document.getElementById('modal-success-msg').classList.remove('hidden');
-            setTimeout(() => {
-                closeAuditModal();
-                document.getElementById('modal-success-msg').classList.add('hidden');
-                document.getElementById('btn-submit-audit').disabled = false;
-                alert("Thank you! Your audit submission has been logged. We will contact you within 24 hours.");
-            }, 2500);
-        }
-
-        // Initialize default scenario
-        loadScenario('compliant');
-    </script>
+  </footer>
 </body>
 </html>
