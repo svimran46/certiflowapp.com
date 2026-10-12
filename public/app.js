@@ -10,17 +10,17 @@ const SCENARIOS = {
     coverages: [
       ["Commercial general liability", "03/14/2027", "$1M each occurrence / $2M aggregate", true],
       ["Automobile liability", "03/14/2027", "$1M combined single limit", true],
-      ["Workers' comp and employers' liability", "01/01/2027", "Statutory, EL $1M each accident", true],
+      ["Workers’ comp and employers’ liability", "01/01/2027", "Statutory, EL $1M each accident", true],
       ["Umbrella", "03/14/2027", "$2M each occurrence", true]
     ],
     endorsements: [["CG 20 10", true], ["CG 20 37", false], ["CG 24 04", true], ["WC 00 03 13", true]],
-    note: "CG 20 37 isn't attached. Limits and dates pass, but you aren't an additional insured for claims that surface after handover, like a framing defect found next year.",
+    note: "CG 20 37 isn’t attached. Limits and dates pass, but you aren’t an additional insured for claims that surface after handover, like a framing defect found next year.",
     notice:
       "To: certificates@mesaridge.example\n" +
       "Subject: Missing CG 20 37 for Lone Pine Framing LLC\n\n" +
       "Hello Mesa Ridge team,\n\n" +
       "We reviewed the certificate for Lone Pine Framing LLC (GL policy CGL-4418207). The ongoing operations endorsement (CG 20 10) is attached, but our subcontract also requires completed operations coverage (CG 20 37 or equivalent) naming Harbor & Main Builders as additional insured.\n\n" +
-      "Please reply with the endorsement page attached and we'll update their file.\n\n" +
+      "Please reply with the endorsement page attached and we’ll update their file.\n\n" +
       "Thank you,\nHarbor & Main Builders"
   },
   hvac: {
@@ -31,13 +31,13 @@ const SCENARIOS = {
     coverages: [
       ["Commercial general liability", "06/15/2027", "$1M each occurrence / $2M aggregate", true],
       ["Automobile liability", "06/15/2027", "$1M combined single limit", true],
-      ["Workers' comp and employers' liability", "06/15/2027", "Statutory, EL $1M each accident", true],
+      ["Workers’ comp and employers’ liability", "06/15/2027", "Statutory, EL $1M each accident", true],
       ["Umbrella", "06/15/2027", "$5M each occurrence", true]
     ],
     endorsements: [["CG 20 10", true], ["CG 20 37", true], ["CG 24 04", true], ["WC 00 03 13", true]],
     note: "Everything matches the project requirements. The next check is scheduled 30 days before the policies renew on 06/15/2027.",
     notice:
-      "No notice needed. Northgate Mechanical's file is complete.\n\n" +
+      "No notice needed. Northgate Mechanical’s file is complete.\n\n" +
       "A renewal request goes to Cobalt Commercial Insurance on 05/16/2027, and the new certificate is reviewed the same way when it arrives."
   },
   roofing: {
@@ -48,17 +48,17 @@ const SCENARIOS = {
     coverages: [
       ["Commercial general liability", "11/30/2026", "$1M each occurrence / $2M aggregate", true],
       ["Automobile liability", "11/30/2026", "$1M combined single limit", true],
-      ["Workers' comp and employers' liability", "09/26/2026", "Lapsed. No renewal on file", false],
+      ["Workers’ comp and employers’ liability", "09/26/2026", "Lapsed. No renewal on file", false],
       ["Umbrella", "11/30/2026", "$1M each occurrence", true]
     ],
     endorsements: [["CG 20 10", true], ["CG 20 37", true], ["CG 24 04", true], ["WC 00 03 13", false]],
-    note: "Workers' comp lapsed on 09/26/2026. A roofing crew is on site without coverage, and an injury claim can fall back on you as the general contractor. GL also renews in under 60 days.",
+    note: "Workers’ comp lapsed on 09/26/2026. A roofing crew is on site without coverage, and an injury claim can fall back on you as the general contractor. GL also renews in under 60 days.",
     notice:
       "To: service@bellmont.example\n" +
-      "Subject: Urgent: lapsed workers' comp for Tri-Valley Roofing Co.\n\n" +
+      "Subject: Urgent: lapsed workers’ comp for Tri-Valley Roofing Co.\n\n" +
       "Hello Bellmont team,\n\n" +
-      "Our records show workers' compensation policy WC-2093371 for Tri-Valley Roofing Co. expired on 09/26/2026. Their site access is on hold until we receive a current certificate showing renewed coverage and the WC 00 03 13 waiver of subrogation in favor of Harbor & Main Builders.\n\n" +
-      "Please reply with the updated certificate as soon as it's bound.\n\n" +
+      "Our records show workers’ compensation policy WC-2093371 for Tri-Valley Roofing Co. expired on 09/26/2026. Their site access is on hold until we receive a current certificate showing renewed coverage and the WC 00 03 13 waiver of subrogation in favor of Harbor & Main Builders.\n\n" +
+      "Please reply with the updated certificate as soon as it’s bound.\n\n" +
       "Thank you,\nHarbor & Main Builders"
   }
 };
@@ -272,7 +272,7 @@ function initForm() {
       confirm.hidden = false;
       confirm.focus();
     } catch (err) {
-      setStatus(err.message || "The request didn't go through.", "error", { href: mailtoFallback(data), text: "Send it by email instead" });
+      setStatus(err.message || "The request didn’t go through.", "error", { href: mailtoFallback(data), text: "Send it by email instead" });
       submit.disabled = false;
       submit.textContent = "Request my free audit";
     }
@@ -289,27 +289,27 @@ const SELF_CHECK = [
   {
     id: "ongoing", short: "CG 20 10",
     q: "Is there an additional insured endorsement for ongoing operations (CG 20 10 or equivalent) naming your company?",
-    gap: "No ongoing-operations endorsement. A checked box on the ACORD 25 alone doesn't make you an additional insured."
+    gap: "No ongoing-operations endorsement. A checked box on the ACORD 25 alone doesn’t make you an additional insured."
   },
   {
     id: "completed", short: "CG 20 37",
     q: "Is there a completed operations endorsement (CG 20 37 or equivalent)?",
-    gap: "No completed-operations endorsement. Claims that surface after handover, like defects, won't reach this sub's policy."
+    gap: "No completed-operations endorsement. Claims that surface after handover, like defects, won’t reach this sub’s policy."
   },
   {
     id: "waiver", short: "Waiver",
-    q: "If your contract requires it, is a waiver of subrogation endorsement attached (CG 24 04, and WC 00 03 13 for workers' comp)?",
-    gap: "No waiver of subrogation. The sub's carrier can pursue you to recover what it pays out."
+    q: "If your contract requires it, is a waiver of subrogation endorsement attached (CG 24 04, and WC 00 03 13 for workers’ comp)?",
+    gap: "No waiver of subrogation. The sub’s carrier can pursue you to recover what it pays out."
   },
   {
-    id: "wc", short: "Workers' comp",
-    q: "Is workers' compensation listed and currently in force?",
-    gap: "Workers' comp is missing or lapsed. An injured worker's claim can fall to you as the general contractor."
+    id: "wc", short: "Workers’ comp",
+    q: "Is workers’ compensation listed and currently in force?",
+    gap: "Workers’ comp is missing or lapsed. An injured worker’s claim can fall to you as the general contractor."
   },
   {
     id: "dates", short: "Dates",
     q: "Do all policies run at least 30 days past today?",
-    gap: "A policy expires within 30 days. Without a renewal certificate, you'll be back here next month."
+    gap: "A policy expires within 30 days. Without a renewal certificate, you’ll be back here next month."
   }
 ];
 const SC_OPTIONS = [["yes", "Yes"], ["no", "No"], ["unsure", "Not sure"]];
@@ -361,15 +361,15 @@ function initSelfCheck() {
     if (no.length) {
       state = "fail";
       title.textContent = no.length === 1 ? "1 gap on this certificate" : no.length + " gaps on this certificate";
-      body.textContent = "If one sub's file looks like this, others probably do too. Send us 5–10 and we'll find them.";
+      body.textContent = "If one sub’s file looks like this, others probably do too. Send us 5–10 and we’ll find them.";
     } else if (unsure.length) {
       state = "warn";
       title.textContent = "Some answers need a closer look";
-      body.textContent = "Endorsement pages are hard to read and easy to miss. We'll check them for you.";
+      body.textContent = "Endorsement pages are hard to read and easy to miss. We’ll check them for you.";
     } else if (answered === SELF_CHECK.length) {
       state = "pass";
       title.textContent = "This certificate looks solid";
-      body.textContent = "That's one sub. A free audit checks the rest the same way, in 24 hours.";
+      body.textContent = "That’s one sub. A free audit checks the rest the same way, in 24 hours.";
     } else if (answered) {
       title.textContent = "So far, so good";
       body.textContent = (SELF_CHECK.length - answered) + " questions to go.";
@@ -456,3 +456,93 @@ initForm();
 initSelfCheck();
 initChrome();
 initPrint();
+
+// ---------- Guilloché engraving: the certificate seal and the security-paper patterns ----------
+const SVG_NS = "http://www.w3.org/2000/svg";
+
+function engrave(svg, d, stroke, width, opacity, rotate) {
+  const p = document.createElementNS(SVG_NS, "path");
+  p.setAttribute("d", d);
+  p.setAttribute("fill", "none");
+  p.setAttribute("stroke", stroke);
+  p.setAttribute("stroke-width", width);
+  p.setAttribute("stroke-opacity", opacity);
+  p.setAttribute("class", "g-line");
+  if (rotate) p.setAttribute("transform", "rotate(" + rotate.toFixed(3) + ")");
+  svg.append(p);
+  return p;
+}
+
+// A woven ring: phase-shifted sine waves wrapped around a circle.
+function ring(svg, radius, amp, waves, strands, stroke, width, opacity, rotate) {
+  for (let s = 0; s < strands; s++) {
+    const phase = (s / strands) * Math.PI * 2;
+    let d = "";
+    for (let i = 0; i <= 720; i++) {
+      const t = (i / 720) * Math.PI * 2;
+      const r = radius + amp * Math.sin(waves * t + phase);
+      d += (i ? "L" : "M") + (r * Math.cos(t)).toFixed(2) + " " + (r * Math.sin(t)).toFixed(2);
+    }
+    engrave(svg, d + "Z", stroke, width, opacity, rotate);
+  }
+}
+
+function initEngraving() {
+  const brass = "#A8834A", ink = "#13233A", lightBrass = "#CDB07A";
+
+  const seal = document.querySelector("[data-seal]");
+  if (seal) {
+    ring(seal, 90, 4.5, 40, 5, brass, 0.5, 0.95);
+    ring(seal, 78, 2.5, 64, 3, brass, 0.4, 0.8);
+    // Interlaced petal mesh in two inks, like two-colour intaglio.
+    for (let k = 0; k < 14; k++) ring(seal, 47, 22, 12, 1, k % 2 ? brass : ink, 0.4, k % 2 ? 0.85 : 0.45, (k * 30) / 14);
+    const type = document.createElementNS(SVG_NS, "g");
+    type.setAttribute("class", "seal-type");
+    const circle = (r, attrs) => {
+      const c = document.createElementNS(SVG_NS, "circle");
+      c.setAttribute("r", r);
+      for (const k in attrs) c.setAttribute(k, attrs[k]);
+      return c;
+    };
+    const word = document.createElementNS(SVG_NS, "text");
+    word.setAttribute("class", "seal-core");
+    word.setAttribute("text-anchor", "middle");
+    word.setAttribute("y", "4");
+    word.setAttribute("font-size", "12.5");
+    word.textContent = "Verified";
+    type.append(
+      circle(28, { fill: "#FAFAF7" }),
+      circle(28, { fill: "none", stroke: brass, "stroke-width": "0.8" }),
+      circle(24.5, { fill: "none", stroke: brass, "stroke-width": "0.4" }),
+      word
+    );
+    seal.append(type);
+    seal.querySelectorAll(".g-line").forEach((p) => p.style.setProperty("--len", Math.ceil(p.getTotalLength())));
+  }
+
+  const band = document.querySelector("[data-band]");
+  if (band) {
+    for (let s = 0; s < 5; s++) {
+      const phase = (s / 5) * Math.PI * 2;
+      let d = "";
+      for (let x = 0; x <= 400; x++) d += (x ? "L" : "M") + x + " " + (7 + 5 * Math.sin(x / 6 + phase)).toFixed(2);
+      const p = engrave(band, d, brass, 0.5, 1);
+      p.removeAttribute("class");
+      p.setAttribute("vector-effect", "non-scaling-stroke");
+    }
+  }
+
+  const rosette = document.querySelector("[data-rosette]");
+  if (rosette) {
+    ring(rosette, 94, 3, 72, 6, lightBrass, 0.2, 1);
+    ring(rosette, 84, 5, 44, 6, lightBrass, 0.2, 1);
+    for (let j = 0; j < 9; j++) ring(rosette, 48, 28, 14, 1, lightBrass, 0.22, 1, (j * 360) / 14 / 9);
+    ring(rosette, 14, 4, 18, 6, lightBrass, 0.2, 1);
+  }
+
+  // Engrave the seal once the coverage lines have been confirmed (timing lives in the CSS).
+  const cert = document.getElementById("hero-cert");
+  if (cert) requestAnimationFrame(() => requestAnimationFrame(() => cert.classList.add("is-verified")));
+}
+
+initEngraving();

@@ -55,16 +55,21 @@ Everything below is judged against that goal.
 
 The old page was a generic dark SaaS template (navy, emerald glow, identical rounded cards). It didn't look like anything from a GC office manager's world. The new design is built around the object the buyer actually handles:
 
-- **The hero is a reviewed ACORD 25.** It has the coverage grid, endorsement pages, a highlighter mark on the failing row, an inspection stamp, and the drafted broker notice. Three tabs switch between compliant, missing CG 20 37, and lapsed workers' comp. The demo *is* the pitch.
+- **Premium refresh (combined with the design from PR #2).** The page now uses the visual language of insurance certificates and security paper, so it reads as a firm that handles documents carefully:
+  - The hero is a verified ACORD 25 sample. Its coverage lines confirm one by one, then an engraved guilloché seal draws itself. That is the one orchestrated animation on the page, and it's skipped when the visitor has reduced motion turned on.
+  - The reviewed-certificate demo (compliant, missing CG 20 37, lapsed workers' comp) is now its own section, laid out as a review console with the drafted broker notice beside it.
 - **Palette:**
-  - Cool office paper `#eef1f6` for the page background
-  - Carbon-form blue `#1f3c88` for rules, links and buttons
-  - Reviewer's highlighter `#ffe14d`, used only to mark findings
-  - Pass, warn and fail colors for status
-- **Type:** Archivo, condensed and heavy, for headings, like site signage. Public Sans, a plain US-government sans, for body text. Both are self-hosted.
+  - Intaglio blue `#13233A` (engraver's ink) for the header, hero, process and request sections, and for primary buttons
+  - Security paper `#EEF0EC` and sheet `#FAFAF7` for light sections
+  - Brass `#A8834A` / `#CDB07A`, used sparingly for the seal, rules, numerals and buttons on dark backgrounds
+  - Reviewer's highlighter `#F0DC9A`, used only to mark findings
+  - Muted pass, warn and fail colors: verdigris `#2F6F62`, ochre `#9A6212`, oxblood `#8C2F28`
+- **Type:** Libre Caslon Display and Libre Caslon Text for headings. Caslon was the face of legal and founding documents. Instrument Sans for body and interface text. All self-hosted, so the strict CSP still holds.
 - **Structure:**
   - Spreadsheet row vs. endorsement pages (the core argument)
   - The six checks
+  - The sample review console
+  - The certificate self-check
   - The three-step free audit (a real sequence, so the numbers are earned)
   - The roadmap, clearly marked as in development
   - Pricing as a table
@@ -75,7 +80,7 @@ The old page was a generic dark SaaS template (navy, emerald glow, identical rou
 
 | Addition | Why it helps the goal |
 |---|---|
-| **Live review animation** on the hero certificate | Shows the product working in the first two seconds, instead of describing it. |
+| **Live review animation** on the sample certificate | Shows the product working in the first two seconds, instead of describing it. |
 | **Certificate self-check** (six questions, live result) | Lets a skeptical visitor test one of their own certificates. Most "no" or "not sure" answers point straight at the audit. Their answers are saved with their request. |
 | **Sample gap report**, on the page and as a one-page PDF | Shows exactly what they get. The PDF can be forwarded to a boss or attached to cold emails. |
 | **Subcontractor COI checklist guide** (`/guides/subcontractor-coi-checklist`) | Shows you know the subject, is useful enough to share, and can rank for COI and endorsement searches. |

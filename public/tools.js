@@ -11,14 +11,14 @@ const ISSUES = [
     text: () => "A primary and noncontributory endorsement (CG 20 01 or equivalent) on the general liability policy." },
   { id: "waiverGl", label: "Waiver of subrogation, general liability (CG 24 04)",
     text: (v) => "A waiver of subrogation endorsement on general liability (CG 24 04 or equivalent) in favor of " + v.gc + "." },
-  { id: "waiverWc", label: "Waiver of subrogation, workers' comp (WC 00 03 13)",
-    text: (v) => "A waiver of subrogation endorsement on workers' compensation (WC 00 03 13) in favor of " + v.gc + "." },
+  { id: "waiverWc", label: "Waiver of subrogation, workers’ comp (WC 00 03 13)",
+    text: (v) => "A waiver of subrogation endorsement on workers’ compensation (WC 00 03 13) in favor of " + v.gc + "." },
   { id: "limits", label: "General liability limits too low",
     text: (v) => "General liability limits of at least " + (v.limit || "[required limits]") + "." },
   { id: "expired", label: "A policy has lapsed",
     text: (v) => "A current certificate showing the renewed policy: " + (v.expired || "[policy and expiration date]") + "." },
-  { id: "wc", label: "No workers' comp on the certificate",
-    text: () => "Evidence of workers' compensation and employers' liability coverage." },
+  { id: "wc", label: "No workers’ comp on the certificate",
+    text: () => "Evidence of workers’ compensation and employers’ liability coverage." },
   { id: "holder", label: "Certificate holder is wrong",
     text: (v) => "The certificate holder updated to " + v.gc + "." }
 ];
@@ -75,7 +75,7 @@ function initNoticeTool() {
     const subject = "Certificate update needed: " + v.sub + (v.project ? ", " + v.project : "");
     const lines = picked.length
       ? picked.map((i, n) => (n + 1) + ". " + i.text(v))
-      : ["[Tick at least one item under \"What's missing or wrong\"]"];
+      : ["[Tick at least one item under \"What’s missing or wrong\"]"];
 
     const body = [
       "Hello " + (v.broker ? v.broker + " team" : "there") + ",",

@@ -6,11 +6,11 @@
   <title>CertiFlow: subcontractor COI and endorsement audits for general contractors</title>
   <meta name="description" content="Send 5–10 subcontractor certificates of insurance. Within 24 hours you get a free gap report covering expired policies, low limits, and missing CG 20 10, CG 20 37 and waiver endorsements.">
   <link rel="canonical" href="https://certiflowapp.com/">
-  <meta name="theme-color" content="#1f3c88">
+  <meta name="theme-color" content="#0D192B">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <link rel="preload" href="/fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/fonts/public-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/libre-caslon-display-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/instrument-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/styles.css">
 
   <meta property="og:type" content="website">
@@ -43,15 +43,14 @@
   <header class="site-header">
     <div class="wrap header-row">
       <a class="logo" href="/" aria-label="CertiFlow home">
-        <svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M7 3h13l6 6v20H7z" fill="#fff" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M20 3v6h6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M11 18.5l3.5 3.5 7-7.5" fill="none" stroke="#17804a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="none" stroke="currentColor" stroke-width="1.2"/><circle cx="16" cy="16" r="11.5" fill="none" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.2 1.6"/><path d="M10.5 16.4l3.6 3.6 7.4-8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span>CertiFlow</span>
       </a>
       <nav class="nav" aria-label="Main">
         <a href="#checks">What we check</a>
+        <a href="#review">Sample review</a>
         <a href="#self-check">Self-check</a>
-        <a href="#process">How it works</a>
         <a href="#pricing">Pricing</a>
-        <a href="#faq">FAQ</a>
         <a href="/guides/subcontractor-coi-checklist">COI checklist</a>
       </nav>
       <a class="btn btn-small" href="#request">Get a free audit</a>
@@ -59,12 +58,11 @@
   </header>
 
   <main id="main">
-    <!-- Hero: the reviewed certificate is the centrepiece -->
     <section class="hero">
       <div class="wrap hero-grid">
         <div class="hero-copy">
           <p class="kicker">For commercial general contractors with 25–100 subs</p>
-          <h1>Find the missing endorsement before your carrier's auditor does.</h1>
+          <h1>Find the missing endorsement before your carrier’s auditor does.</h1>
           <p class="lede">Send us 5–10 subcontractor certificates. Within 24 hours you get a one-page gap report: expired policies, low limits, and any missing CG&nbsp;20&nbsp;10, CG&nbsp;20&nbsp;37 or waiver of subrogation endorsements. Free, with broker notices already drafted.</p>
           <div class="hero-actions">
             <a class="btn" href="#request">Get a free audit</a>
@@ -73,63 +71,54 @@
           <p class="fineprint">No software to install. We work from the PDFs you already have.</p>
         </div>
 
-        <div class="review" id="review">
-          <div class="tabs" role="tablist" aria-label="Sample certificates">
-            <button role="tab" id="tab-framing" aria-controls="sheet" aria-selected="true" data-scenario="framing">Framing sub</button>
-            <button role="tab" id="tab-hvac" aria-controls="sheet" aria-selected="false" tabindex="-1" data-scenario="hvac">HVAC sub</button>
-            <button role="tab" id="tab-roofing" aria-controls="sheet" aria-selected="false" tabindex="-1" data-scenario="roofing">Roofing sub</button>
-          </div>
-
-          <div class="sheet" id="sheet" role="tabpanel" aria-labelledby="tab-framing" aria-live="polite">
-            <header class="sheet-head">
+        <div class="cert-stage">
+          <figure class="cert" id="hero-cert" aria-label="Sample certificate, fictional data: every coverage line and endorsement meets the requirements">
+            <div class="cert-band" aria-hidden="true"><svg data-band preserveAspectRatio="none" viewBox="0 0 400 14"></svg></div>
+            <div class="cert-head">
               <div>
-                <div class="sheet-title">Certificate of liability insurance</div>
-                <div class="sheet-sub">ACORD 25 · sample, fictional data</div>
+                <div class="cert-form">ACORD 25 sample with fictional data</div>
+                <div class="cert-title">Certificate of liability insurance</div>
               </div>
-              <div class="stamp" data-field="stamp">Action needed</div>
-            </header>
-            <p class="scan-status" data-field="progress" role="status"></p>
-
-            <dl class="sheet-parties">
-              <div><dt>Producer (broker)</dt><dd data-field="broker">Mesa Ridge Insurance Group</dd></div>
-              <div><dt>Insured</dt><dd data-field="insured">Lone Pine Framing LLC</dd></div>
-              <div><dt>Certificate holder</dt><dd>Harbor &amp; Main Builders</dd></div>
+              <div class="cert-date">Reviewed<br><span class="num">10/12/2026</span></div>
+            </div>
+            <dl class="cert-parties">
+              <div><dt>Producer (broker)</dt><dd>Cobalt Commercial Insurance</dd></div>
+              <div><dt>Insured</dt><dd>Northgate Mechanical Inc.</dd></div>
+              <div class="span"><dt>Certificate holder</dt><dd>Harbor &amp; Main Builders, as additional insured</dd></div>
             </dl>
-
-            <table class="coverages">
-              <caption class="visually-hidden">Coverages on the certificate and whether each meets the project requirement</caption>
-              <thead><tr><th scope="col">Coverage</th><th scope="col">Expires</th><th scope="col">Limits</th><th scope="col"><span class="visually-hidden">Result</span></th></tr></thead>
-              <tbody data-field="coverages"></tbody>
+            <table class="cert-cov">
+              <thead><tr><th scope="col">Coverage</th><th scope="col">Limits</th><th scope="col"><span class="visually-hidden">Result</span></th></tr></thead>
+              <tbody>
+                <tr><td>Commercial general liability</td><td class="limit">$1M / $2M aggregate</td><td class="tick-cell"><span class="tick"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 4.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="visually-hidden">meets requirement</span></td></tr>
+                <tr><td>Automobile liability</td><td class="limit">$1M combined single limit</td><td class="tick-cell"><span class="tick"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 4.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="visually-hidden">meets requirement</span></td></tr>
+                <tr><td>Workers’ comp and employers’ liability</td><td class="limit">Statutory, EL $1M</td><td class="tick-cell"><span class="tick"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 4.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="visually-hidden">meets requirement</span></td></tr>
+                <tr><td>Endorsements</td><td class="limit">CG&nbsp;20&nbsp;10, CG&nbsp;20&nbsp;37, CG&nbsp;24&nbsp;04, WC&nbsp;00&nbsp;03&nbsp;13</td><td class="tick-cell"><span class="tick"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 4.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="visually-hidden">meets requirement</span></td></tr>
+              </tbody>
             </table>
-
-            <div class="endorsements">
-              <div class="endorse-label">Endorsement pages attached</div>
-              <ul data-field="endorsements"></ul>
+            <div class="cert-foot">
+              <p>Limits and endorsements checked against the subcontract. Renewal request goes to the broker on 16 May 2027.</p>
+              <div class="seal" aria-hidden="true"><svg data-seal viewBox="-100 -100 200 200"></svg></div>
             </div>
-
-            <p class="margin-note" data-field="note"></p>
-          </div>
-
-          <div class="notice">
-            <div class="notice-head">
-              <span>Drafted notice to the broker</span>
-              <span class="tool-actions">
-                <button type="button" class="link-btn" id="copy-notice">Copy text</button>
-                <a class="link-btn" href="/tools/broker-notice">Write one for your sub</a>
-              </span>
-            </div>
-            <pre class="notice-body" data-field="notice" tabindex="0" aria-label="Drafted notice text"></pre>
-          </div>
+          </figure>
         </div>
+      </div>
+
+      <div class="wrap forms-strip">
+        <p>Checks the endorsement pages behind every ACORD 25</p>
+        <ul>
+          <li><b>CG 20 10</b><span>Ongoing operations</span></li>
+          <li><b>CG 20 37</b><span>Completed operations</span></li>
+          <li><b>CG 24 04</b><span>Waiver of subrogation, GL</span></li>
+          <li><b>WC 00 03 13</b><span>Waiver of subrogation, WC</span></li>
+        </ul>
       </div>
     </section>
 
-    <!-- Problem -->
     <section class="section" id="checks">
       <div class="wrap">
         <div class="section-intro">
           <h2>A spreadsheet tracks the date. The risk is in the endorsement pages.</h2>
-          <p>Most tracking stops at the expiration date on page one. Whether your company is actually named as additional insured lives in the endorsement pages behind the ACORD 25, and that's where claims and premium audits get decided.</p>
+          <p>Most tracking stops at the expiration date on page one. Whether your company is actually named as additional insured lives in the endorsement pages behind the ACORD 25, and that’s where claims and premium audits get decided.</p>
         </div>
 
         <div class="compare">
@@ -149,7 +138,7 @@
               <li class="miss"><span><span class="mark">CG 20 37 completed operations</span></span><span class="bad">Not attached</span></li>
               <li><span>CG 24 04 waiver of subrogation</span><span class="ok">Attached</span></li>
             </ul>
-            <p>A defect claim after turnover would not reach this sub's policy.</p>
+            <p>A defect claim after turnover would not reach this sub’s policy.</p>
           </figure>
         </div>
 
@@ -157,20 +146,79 @@
         <p class="checks-more">Want the detail? Read the <a href="/guides/subcontractor-coi-checklist">full subcontractor certificate checklist</a>.</p>
         <dl class="checks">
           <div><dt>General liability limits</dt><dd>Each occurrence and aggregate against what your prime contract requires, commonly $1M / $2M.</dd></div>
-          <div><dt>Additional insured, ongoing operations</dt><dd>CG 20 10 (or the carrier's equivalent form) naming your company for work in progress.</dd></div>
+          <div><dt>Additional insured, ongoing operations</dt><dd>CG 20 10 (or the carrier’s equivalent form) naming your company for work in progress.</dd></div>
           <div><dt>Additional insured, completed operations</dt><dd>CG 20 37 or equivalent, which keeps you covered for claims that surface after handover.</dd></div>
-          <div><dt>Waiver of subrogation</dt><dd>CG 24 04 on general liability, and WC 00 03 13 on workers' comp, when your contract calls for them.</dd></div>
-          <div><dt>Workers' comp and employers' liability</dt><dd>Active statutory coverage, plus employers' liability limits, for every crew on site.</dd></div>
+          <div><dt>Waiver of subrogation</dt><dd>CG 24 04 on general liability, and WC 00 03 13 on workers’ comp, when your contract calls for them.</dd></div>
+          <div><dt>Workers’ comp and employers’ liability</dt><dd>Active statutory coverage, plus employers’ liability limits, for every crew on site.</dd></div>
           <div><dt>Dates, auto and umbrella</dt><dd>Lapsed or soon-to-lapse policies, commercial auto CSL, and umbrella limits where required.</dd></div>
         </dl>
       </div>
     </section>
 
-    <!-- Self-check: lets a visitor test one real certificate before talking to anyone -->
-    <section class="section section-band" id="self-check">
+    <section class="section section-band" id="review">
       <div class="wrap">
         <div class="section-intro">
-          <h2>Check one certificate yourself</h2>
+          <h2>Watch a certificate get reviewed.</h2>
+          <p>Pick a subcontractor. Each sample is checked against a typical commercial subcontract, and the notice to the broker is drafted for you. All names and policy numbers are fictional.</p>
+        </div>
+
+        <div class="review">
+          <div class="tabs" role="tablist" aria-label="Sample certificates">
+            <button role="tab" id="tab-framing" aria-controls="sheet" aria-selected="true" data-scenario="framing">Framing sub</button>
+            <button role="tab" id="tab-hvac" aria-controls="sheet" aria-selected="false" tabindex="-1" data-scenario="hvac">HVAC sub</button>
+            <button role="tab" id="tab-roofing" aria-controls="sheet" aria-selected="false" tabindex="-1" data-scenario="roofing">Roofing sub</button>
+          </div>
+
+          <div class="review-body">
+            <div class="sheet" id="sheet" role="tabpanel" aria-labelledby="tab-framing" aria-live="polite">
+              <header class="sheet-head">
+                <div>
+                  <div class="sheet-title">Certificate of liability insurance</div>
+                  <div class="sheet-sub">ACORD 25 sample with fictional data</div>
+                </div>
+                <div class="stamp" data-field="stamp">Action needed</div>
+              </header>
+              <p class="scan-status" data-field="progress" role="status"></p>
+
+              <dl class="sheet-parties">
+                <div><dt>Producer (broker)</dt><dd data-field="broker">Mesa Ridge Insurance Group</dd></div>
+                <div><dt>Insured</dt><dd data-field="insured">Lone Pine Framing LLC</dd></div>
+                <div><dt>Certificate holder</dt><dd>Harbor &amp; Main Builders</dd></div>
+              </dl>
+
+              <table class="coverages">
+                <caption class="visually-hidden">Coverages on the certificate and whether each meets the project requirement</caption>
+                <thead><tr><th scope="col">Coverage</th><th scope="col">Expires</th><th scope="col">Limits</th><th scope="col"><span class="visually-hidden">Result</span></th></tr></thead>
+                <tbody data-field="coverages"></tbody>
+              </table>
+
+              <div class="endorsements">
+                <div class="endorse-label">Endorsement pages attached</div>
+                <ul data-field="endorsements"></ul>
+              </div>
+
+              <p class="margin-note" data-field="note"></p>
+            </div>
+
+            <div class="notice">
+              <div class="notice-head">
+                <span>Drafted notice to the broker</span>
+                <span class="tool-actions">
+                  <button type="button" class="link-btn" id="copy-notice">Copy text</button>
+                  <a class="link-btn" href="/tools/broker-notice">Write one for your sub</a>
+                </span>
+              </div>
+              <pre class="notice-body" data-field="notice" tabindex="0" aria-label="Drafted notice text"></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="self-check">
+      <div class="wrap">
+        <div class="section-intro">
+          <h2>Check one certificate yourself.</h2>
           <p>Open the most recent certificate from any sub on an active job and answer six questions. It takes about a minute, and nothing you click here is sent anywhere.</p>
         </div>
 
@@ -190,12 +238,11 @@
       </div>
     </section>
 
-    <!-- Process: a real sequence, so numbering is earned -->
-    <section class="section" id="process">
+    <section class="section section-dark" id="process">
       <div class="wrap">
         <div class="section-intro">
-          <h2>How the free audit works</h2>
-          <p>It takes about ten minutes of your office's time.</p>
+          <h2>How the free audit works.</h2>
+          <p>It takes about ten minutes of your office’s time.</p>
         </div>
         <ol class="steps">
           <li>
@@ -220,7 +267,7 @@
                 <div class="report-title" id="report-title">Subcontractor insurance gap report</div>
                 <div class="report-meta">Prepared for Harbor &amp; Main Builders. 10 certificates reviewed against your subcontract requirements.</div>
               </div>
-              <svg class="report-logo" viewBox="0 0 32 32" aria-hidden="true"><path d="M7 3h13l6 6v20H7z" fill="#fff" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M20 3v6h6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M11 18.5l3.5 3.5 7-7.5" fill="none" stroke="#17804a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <svg class="report-logo" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="none" stroke="currentColor" stroke-width="1.2"/><circle cx="16" cy="16" r="11.5" fill="none" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.2 1.6"/><path d="M10.5 16.4l3.6 3.6 7.4-8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </header>
 
             <div class="report-summary">
@@ -236,7 +283,7 @@
               <caption class="visually-hidden">Findings ranked by risk</caption>
               <thead><tr><th scope="col">Subcontractor</th><th scope="col">Finding</th><th scope="col">What happens next</th></tr></thead>
               <tbody>
-                <tr><td><span class="dot dot-fail"></span>Tri-Valley Roofing</td><td>Workers' comp lapsed 09/26/2026</td><td>Notice drafted to Bellmont Underwriting</td></tr>
+                <tr><td><span class="dot dot-fail"></span>Tri-Valley Roofing</td><td>Workers’ comp lapsed 09/26/2026</td><td>Notice drafted to Bellmont Underwriting</td></tr>
                 <tr><td><span class="dot dot-warn"></span>Lone Pine Framing</td><td>No CG 20 37 completed operations endorsement</td><td>Notice drafted to Mesa Ridge Insurance</td></tr>
                 <tr><td><span class="dot dot-warn"></span>Clearline Glass &amp; Glazing</td><td>GL aggregate $1M, contract requires $2M</td><td>Notice drafted to Northfork Agency</td></tr>
                 <tr><td><span class="dot dot-warn"></span>Brightwire Electric</td><td>GL renews in 21 days</td><td>Renewal request drafted</td></tr>
@@ -247,23 +294,22 @@
         </figure>
 
         <div class="roadmap">
-          <h3>What we're building with our first contractors</h3>
-          <p>The audit is the first piece of CertiFlow. Contractors who join the founding pilot help shape the portal around it:</p>
+          <h3>What we’re building with our first contractors</h3>
+          <p>The audit is the first piece of CertiFlow. Contractors who join the founding pilot help shape the portal around it.</p>
           <ul>
-            <li><strong>Upload links for subs and brokers.</strong> They drop in a PDF without making an account.</li>
-            <li><strong>Renewal follow-up.</strong> Brokers hear from us 30 and 14 days before a policy lapses.</li>
-            <li><strong>Audit binder.</strong> Every certificate and endorsement, time-stamped, exportable when your carrier asks.</li>
+            <li><strong>Upload links for subs and brokers</strong>They drop in a PDF without making an account.</li>
+            <li><strong>Renewal follow-up</strong>Brokers hear from us 30 and 14 days before a policy lapses.</li>
+            <li><strong>Audit binder</strong>Every certificate and endorsement, time-stamped, exportable when your carrier asks.</li>
           </ul>
         </div>
       </div>
     </section>
 
-    <!-- Pricing -->
     <section class="section section-band" id="pricing">
       <div class="wrap">
         <div class="section-intro">
-          <h2>Pricing</h2>
-          <p>The audit is free and carries no obligation. When the portal opens, it's a flat monthly price based on how many active subcontractors you track. No per-seat fees, no annual contract.</p>
+          <h2>Priced by the size of your roster.</h2>
+          <p>The audit is free and carries no obligation. When the portal opens, it’s a flat monthly price based on how many active subcontractors you track. No per-seat fees, no annual contract.</p>
         </div>
         <div class="price-table" role="table" aria-label="Planned monthly pricing">
           <div class="price-row price-head" role="row">
@@ -279,60 +325,64 @@
             <span role="cell" class="plan">Pro</span><span role="cell">Up to 200</span><span role="cell" class="amount">$199</span><span role="cell">Everything in Growth, plus unlimited users and CSV export for Procore</span>
           </div>
         </div>
-        <p class="fineprint">Planned launch pricing. Founding pilot terms are agreed one-to-one.</p>
+        <p class="fineprint">Planned launch pricing in US dollars. Founding pilot terms are agreed one-to-one.</p>
       </div>
     </section>
 
-    <!-- FAQ -->
     <section class="section" id="faq">
-      <div class="wrap narrow">
-        <h2>Questions</h2>
-        <details>
-          <summary>Is the audit really free?</summary>
-          <p>Yes. We review up to 10 of your subcontractor certificates at no cost. If the report is useful, we'll talk about the pilot. If not, you keep the report.</p>
-        </details>
-        <details>
-          <summary>Who reviews the certificates?</summary>
-          <p>Software reads the ACORD 25 and the endorsement pages, and a person checks every result before it goes in your report. Anything unclear is flagged as unclear, not guessed.</p>
-        </details>
-        <details>
-          <summary>What happens to the documents we send?</summary>
-          <p>We use them only to prepare your report. We don't share them, and we delete them when you ask. See our <a href="/privacy">privacy notice</a>.</p>
-        </details>
-        <details>
-          <summary>Do our subs or their brokers need to do anything?</summary>
-          <p>Not for the audit. We work from the certificates you already have. The drafted broker notices are yours to send, edit or ignore.</p>
-        </details>
-        <details>
-          <summary>Doesn't our insurance broker already do this?</summary>
-          <p>Your broker looks after your own policies. Checking every sub's certificate usually falls to your office. Some brokers do offer tracking, but most track expiration dates, not the endorsement pages behind each certificate. If yours already reviews endorsements for every sub, you may not need us, and the free audit is a quick way to find out.</p>
-        </details>
-        <details>
-          <summary>We already use Procore or a spreadsheet. Do we have to switch?</summary>
-          <p>No. The audit works from the PDFs you already have, and the report is yours to keep. Keep tracking wherever you track today.</p>
-        </details>
-        <details>
-          <summary>Is this insurance or legal advice?</summary>
-          <p>No. CertiFlow checks documents against the requirements you give us. It isn't an insurance agency, and it doesn't replace your broker or attorney on coverage questions.</p>
-        </details>
-        <div class="resources">
-          <h3>Free resources</h3>
-          <ul>
-            <li><a href="/guides/subcontractor-coi-checklist">Subcontractor certificate checklist</a><span>What to check on every ACORD 25 and its endorsement pages.</span></li>
-            <li><a href="/guides/premium-audit-uninsured-subcontractors">Premium audits and uninsured subs</a><span>How a missing certificate ends up on your own premium.</span></li>
-            <li><a href="/tools/broker-notice">Broker notice generator</a><span>Write a clear request to a sub's broker in a minute.</span></li>
-            <li><a href="/sample-gap-report.pdf" download>Sample gap report (PDF)</a><span>The one-page report you get from a free audit.</span></li>
-          </ul>
+      <div class="wrap faq-grid">
+        <div class="faq-head">
+          <h2>Questions contractors ask us.</h2>
+          <p>Anything else, write to <a href="mailto:support@certiflowapp.com">support@certiflowapp.com</a>.</p>
+        </div>
+        <div>
+          <details>
+            <summary>Is the audit really free?</summary>
+            <p>Yes. We review up to 10 of your subcontractor certificates at no cost. If the report is useful, we’ll talk about the pilot. If not, you keep the report.</p>
+          </details>
+          <details>
+            <summary>Who reviews the certificates?</summary>
+            <p>Software reads the ACORD 25 and the endorsement pages, and a person checks every result before it goes in your report. Anything unclear is flagged as unclear, not guessed.</p>
+          </details>
+          <details>
+            <summary>What happens to the documents we send?</summary>
+            <p>We use them only to prepare your report. We don’t share them, and we delete them when you ask. See our <a href="/privacy">privacy notice</a>.</p>
+          </details>
+          <details>
+            <summary>Do our subs or their brokers need to do anything?</summary>
+            <p>Not for the audit. We work from the certificates you already have. The drafted broker notices are yours to send, edit or ignore.</p>
+          </details>
+          <details>
+            <summary>Doesn’t our insurance broker already do this?</summary>
+            <p>Your broker looks after your own policies. Checking every sub’s certificate usually falls to your office. Some brokers do offer tracking, but most track expiration dates, not the endorsement pages behind each certificate. If yours already reviews endorsements for every sub, you may not need us, and the free audit is a quick way to find out.</p>
+          </details>
+          <details>
+            <summary>We already use Procore or a spreadsheet. Do we have to switch?</summary>
+            <p>No. The audit works from the PDFs you already have, and the report is yours to keep. Keep tracking wherever you track today.</p>
+          </details>
+          <details>
+            <summary>Is this insurance or legal advice?</summary>
+            <p>No. CertiFlow checks documents against the requirements you give us. It isn’t an insurance agency, and it doesn’t replace your broker or attorney on coverage questions.</p>
+          </details>
+          <div class="resources">
+            <h3>Free resources</h3>
+            <ul>
+              <li><a href="/guides/subcontractor-coi-checklist">Subcontractor certificate checklist</a><span>What to check on every ACORD 25 and its endorsement pages.</span></li>
+              <li><a href="/guides/premium-audit-uninsured-subcontractors">Premium audits and uninsured subs</a><span>How a missing certificate ends up on your own premium.</span></li>
+              <li><a href="/tools/broker-notice">Broker notice generator</a><span>Write a clear request to a sub’s broker in a minute.</span></li>
+              <li><a href="/sample-gap-report.pdf" download>Sample gap report (PDF)</a><span>The one-page report you get from a free audit.</span></li>
+            </ul>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Request form -->
     <section class="section request" id="request">
+      <div class="request-rosette" aria-hidden="true"><svg data-rosette viewBox="-100 -100 200 200"></svg></div>
       <div class="wrap request-grid">
         <div class="request-copy">
-          <h2>Request a free audit</h2>
-          <p>Tell us who you are and roughly how many subs you manage. We'll reply within one business day with where to send 5–10 certificates.</p>
+          <h2>Send us ten certificates. We’ll show you what’s missing.</h2>
+          <p>Tell us who you are and roughly how many subs you manage. We’ll reply within one business day with where to send 5–10 certificates.</p>
           <ul class="assurances">
             <li><strong>No cost, no card, no contract.</strong> You keep the report either way.</li>
             <li><strong>Checked by a person.</strong> Every finding is reviewed before it reaches you.</li>
@@ -382,19 +432,19 @@
           </div>
           <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
           <button class="btn btn-block" type="submit" id="form-submit">Request my free audit</button>
-          <p class="fineprint">We'll only use these details to arrange your audit.</p>
+          <p class="fineprint">We’ll only use these details to arrange your audit.</p>
         </form>
 
         <div class="form confirm" id="audit-confirm" tabindex="-1" hidden>
-          <svg class="confirm-mark" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" stroke-width="3"/><path d="M14 25l7 7 13-15" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <svg class="confirm-mark" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="22" fill="none" stroke="currentColor" stroke-width="2"/><path d="M14 25l7 7 13-15" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <h3>Request received</h3>
-          <p>Thanks<span data-confirm="name"></span>. Here's what happens next:</p>
+          <p>Thanks<span data-confirm="name"></span>. Here’s what happens next:</p>
           <ol class="confirm-steps">
             <li><strong>Within one business day</strong> we email <span data-confirm="email"></span> with where to send your certificates.</li>
             <li><strong>You send 5–10 certificates</strong> and their endorsement pages, plus your insurance requirements if you have them written down.</li>
             <li><strong>Within 24 hours of receiving them</strong> you get your gap report and drafted broker notices.</li>
           </ol>
-          <p class="fineprint">While you wait, the <a href="/guides/subcontractor-coi-checklist">subcontractor certificate checklist</a> covers everything we'll look at.</p>
+          <p class="fineprint">While you wait, the <a href="/guides/subcontractor-coi-checklist">subcontractor certificate checklist</a> covers everything we’ll look at.</p>
         </div>
       </div>
     </section>
