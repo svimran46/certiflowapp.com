@@ -52,6 +52,7 @@
         <a href="#self-check">Self-check</a>
         <a href="#pricing">Pricing</a>
         <a href="/guides/subcontractor-coi-checklist">COI checklist</a>
+        <a href="/login.html">Sign in</a>
       </nav>
       <a class="btn btn-small" href="#request">Get a free audit</a>
     </div>
@@ -313,16 +314,34 @@
         </div>
         <div class="price-table" role="table" aria-label="Planned monthly pricing">
           <div class="price-row price-head" role="row">
-            <span role="columnheader">Plan</span><span role="columnheader">Active subs</span><span role="columnheader">Per month</span><span role="columnheader">Includes</span>
+            <span role="columnheader">Plan</span><span role="columnheader">Active subs</span><span role="columnheader">Per month</span><span role="columnheader">Includes</span><span role="columnheader" class="visually-hidden">Subscribe</span>
           </div>
           <div class="price-row" role="row">
             <span role="cell" class="plan">Starter</span><span role="cell">Up to 25</span><span role="cell" class="amount">$49</span><span role="cell">Certificate and endorsement checks, broker notices, audit export</span>
+            <span role="cell" class="price-cta">
+              <form method="POST" action="/api/create-checkout-session">
+                <input type="hidden" name="plan" value="starter">
+                <button class="btn btn-small" type="submit">Subscribe</button>
+              </form>
+            </span>
           </div>
           <div class="price-row" role="row">
             <span role="cell" class="plan">Growth</span><span role="cell">Up to 75</span><span role="cell" class="amount">$99</span><span role="cell">Everything in Starter, plus per-project requirements and 30/14-day renewal follow-up</span>
+            <span role="cell" class="price-cta">
+              <form method="POST" action="/api/create-checkout-session">
+                <input type="hidden" name="plan" value="growth">
+                <button class="btn btn-small" type="submit">Subscribe</button>
+              </form>
+            </span>
           </div>
           <div class="price-row" role="row">
             <span role="cell" class="plan">Pro</span><span role="cell">Up to 200</span><span role="cell" class="amount">$199</span><span role="cell">Everything in Growth, plus unlimited users and CSV export for Procore</span>
+            <span role="cell" class="price-cta">
+              <form method="POST" action="/api/create-checkout-session">
+                <input type="hidden" name="plan" value="pro">
+                <button class="btn btn-small" type="submit">Subscribe</button>
+              </form>
+            </span>
           </div>
         </div>
         <p class="fineprint">Planned launch pricing in US dollars. Founding pilot terms are agreed one-to-one.</p>
@@ -461,6 +480,7 @@
       <a href="/guides/subcontractor-coi-checklist">COI checklist</a>
       <a href="/guides/premium-audit-uninsured-subcontractors">Premium audits</a>
       <a href="/tools/broker-notice">Broker notice tool</a>
+      <a href="/login.html">Sign in</a>
       <a href="/privacy">Privacy</a>
       <a href="mailto:support@certiflowapp.com">support@certiflowapp.com</a>
       <span class="footer-note">CertiFlow reviews documents against your requirements. It is not an insurance agency and does not give legal advice.</span>
