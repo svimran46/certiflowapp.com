@@ -12,7 +12,10 @@
     "directory": "./dist",
     "binding": "ASSETS",
     "html_handling": "auto-trailing-slash",
-    "not_found_handling": "404-page"
+    "not_found_handling": "404-page",
+    // With a 404 page set, the asset layer answers every GET it can't match
+    // and the Worker never runs. Send the Worker's own routes to it first.
+    "run_worker_first": ["/auth/*", "/api/*", "/admin", "/admin/*"]
   },
   "d1_databases": [
     {

@@ -163,3 +163,4 @@ Turn on **Disable builds** in the separate *Preview* environment: its preview bu
 | d844642 (pushed straight to `main` from another tool) | A separate immediate-charge checkout and email login, deployed manually |
 | #4 | Removed d844642's checkout and email login. One sign-up path remains. |
 | this file | Rewritten to match the code; removed key fragments that an earlier version contained |
+| `run_worker_first` | `/auth/*`, `/api/*` and `/admin` were answered by the 404 page on GET, so Google sign-in never started. `wrangler.jsonc` now sends those paths to the Worker first. Keep this list in step with the Worker's routes. |
