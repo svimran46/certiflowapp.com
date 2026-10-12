@@ -1,137 +1,165 @@
-# CertiFlow Project Status & Session Summary
+# CertiFlow: project state and handoff notes
 
-> **Context for AI Models / Developers:**  
-> This document provides the complete context, architectural state, and recent changelog for **CertiFlow** (`certiflowapp.com`), deployed on Cloudflare Workers.
+Read this before changing anything. It describes the site as it is on `main` and the rules that keep it working. Keep it up to date when you change how the site works.
 
----
-
-## 1. Project Overview & Tech Stack
-- **Product:** CertiFlow – Automated Subcontractor Insurance (COI) & Endorsement Compliance Portal for General Contractors.
-- **Repository:** `https://github.com/svimran46/certiflowapp.com`
-- **Local Path:** `c:\Users\User\Downloads\certiflowapp.com`
-- **Hosting / Runtime:** Cloudflare Workers with Static Assets (`wrangler.jsonc`)
-  - **Worker Name:** `certiflowapp-com`
-  - **Live URL:** `https://certiflowapp-com.svimranmy.workers.dev` (and custom domain `certiflowapp.com`)
-  - **Database:** Cloudflare D1 (`certiflow-leads`, database ID: `4f1ed89e-21ba-4a96-80a8-841c284c05ae`)
-  - **Email Service:** Resend (`api.resend.com`)
-  - **Payments:** Stripe Checkout & Billing API (`stripe` v23.0.0)
+Last updated: 12 October 2026.
 
 ---
 
-## 2. Work Completed in This Session
+## 1. Rules for anyone (person or AI) working on this repo
 
-### A. Stripe Checkout Integration
-1. **Installed SDK:** Added `stripe` (`^23.0.0`) to `package.json`.
-2. **Products Configured:** Verified 3 monthly subscription tiers created in the Stripe dashboard:
-   - **Starter** ($49/month): `price_1UPfmOFaQ2FHfDqc2LthKXdt`
-   - **Growth** ($99/month): `price_1UPfnkFaQ2FHfDqcH97iYzH4`
-   - **Pro** ($199/month): `price_1UPfooFaQ2FHfDqcsjSMYUKa`
-3. **Server Endpoint (`src/worker.js`):**
-   - Route: `POST /api/create-checkout-session`
-   - Parameters:
-     - `mode`: `"subscription"`
-     - `ui_mode`: `"hosted_page"`
-     - `payment_method_collection`: `"always"`
-     - `billing_address_collection`: `"auto"`
-     - `submit_type`: `"auto"`
-     - `success_url`: `${origin}/?session_id={CHECKOUT_SESSION_ID}#pricing`
-     - `cancel_url`: `${origin}/#pricing`
-     - Accepts JSON `{ "plan": "starter" | "growth" | "pro" }` or URL-encoded form submissions.
-     - Responds with `303 See Other` redirect to `session.url` for browser posts, or JSON `{ url, sessionId }` when requested with `Accept: application/json`.
-4. **Frontend UI:**
-   - Updated `public/index.html` pricing table (`#pricing`) with interactive **"Subscribe"** buttons for each plan.
-   - Styled forms in `public/styles.css` with clean layout on desktop and full-width actions on mobile.
-5. **Documentation:** Created `STRIPE_INTEGRATION_TODO.md`.
+1. **Deploy only from GitHub.** Cloudflare Workers Builds deploys `main` automatically. Never run `npm run deploy` or `wrangler deploy` from a local copy: an out-of-date folder overwrites the live site. This happened on 12 October, when a manual deploy put a removed checkout back live.
+2. **Pull before you start.** Run `git pull origin main` first. Several tools have worked on this repo, and an old local copy will reintroduce removed code.
+3. **Change things through pull requests**, not direct pushes to `main`. CI (`.github/workflows/ci.yml`) runs the build, the tests and a `wrangler deploy --dry-run` on every PR.
+4. **Never commit secrets, or parts of them**, to this repo. It is public. Secret names are fine; values and prefixes are not.
+5. **Keep the Content Security Policy** in `public/_headers`. That means no inline `<style>`, no inline `<script>`, no `style=""` attributes, and no third-party scripts, styles or fonts. Put CSS in `public/styles.css`, JS in `public/*.js`, and fonts in `public/fonts/`.
+6. **No free service.** The only way to get certificates reviewed is a 14-day trial that needs a Google account and a card on file. Free guides, the self-check and the broker-notice tool are lead magnets, not the service.
+7. Before opening a PR, run `npm run build`, `npm test` and `npx wrangler deploy --dry-run`.
 
 ---
 
-### B. Passwordless Magic Link Email Sign-In
-1. **UI Page (`public/login.html`):**
-   - Passwordless sign-in page where users enter their work email to receive a one-time link.
-   - Added **"Sign in"** links to the site header navigation and footer.
-2. **Database Migration (`migrations/0003_magic_links.sql`):**
-   - Table: `magic_links`
-     - `id` (INTEGER PRIMARY KEY)
-     - `token` (TEXT NOT NULL UNIQUE)
-     - `email` (TEXT NOT NULL)
-     - `created_at` (TEXT NOT NULL DEFAULT datetime('now'))
-     - `expires_at` (TEXT NOT NULL)
-     - `used_at` (TEXT)
-   - Index on `token`.
-3. **Backend Endpoints (`src/worker.js`):**
-   - **`POST /api/auth/magic-link`**:
-     - Validates work email.
-     - Generates 64-char crypto token expiring in 15 minutes.
-     - Saves token into Cloudflare D1 `magic_links`.
-     - Sends email via **Resend API** with link: `${origin}/api/auth/verify?token=...`.
-   - **`GET /api/auth/verify?token=...`**:
-     - Validates token in D1 (checks existence, expiration, and ensures not previously used).
-     - Burns token (`UPDATE magic_links SET used_at = datetime('now')`).
-     - Issues `HttpOnly`, `Secure` session cookie: `certiflow_session=<token>`.
-     - If email is an admin (`support.certiflowapp@gmail.com` or `svimranmy@gmail.com`), redirects directly to `/admin` without requiring HTTP Basic Auth!
-     - Otherwise redirects to `/?signed_in=1#pricing`.
-4. **Admin Protection (`src/worker.js` - `isAdmin`):**
-   - Supports both HTTP Basic Auth and valid admin session cookies from magic link sign-ins.
-5. **Automated Testing (`test/worker.test.mjs`):**
-   - Unit tests covering token creation, verification, single-use prevention, and admin authentication.
-   - **All 16 test cases pass.**
+## 2. What the product is
+
+CertiFlow checks subcontractors' certificates of insurance (ACORD 25) **and the endorsement pages behind them** (CG 20 10, CG 20 37, CG 24 04, WC 00 03 13) for commercial general contractors with 25–100 subs. It reports what's missing and drafts the notice to each sub's broker.
+
+While the portal is being built, the team does the checks and follow-ups by hand for paying customers. The pricing section says so.
+
+| Plan | Active subs | Price |
+|---|---|---|
+| Starter | up to 25 | USD 49 / month |
+| Growth | up to 75 | USD 99 / month |
+| Pro | up to 200 | USD 199 / month |
+
+Every plan starts with a **14-day free trial. A card is required, and nothing is charged until the trial ends.**
 
 ---
 
-### C. Cloudflare Infrastructure, Secrets & Remote Database
-1. **Remote Cloudflare Worker Secrets:** Configured via `wrangler secret put`:
-   - `STRIPE_SECRET_KEY`: Set to user's test key (`sk_test_51UPfaLFa...`).
-   - `RESEND_API_KEY`: Set to user's Resend key (`re_SgfRnJqv...`).
-   - `NOTIFY_EMAIL`: Set to `support.certiflowapp@gmail.com`.
-2. **Local Environment Variables (`.dev.vars` - Git Ignored):**
-   - Contains Stripe keys, Resend key, and Google OAuth credentials (`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`).
-3. **Remote D1 Database Migration:**
-   - Applied `0003_magic_links.sql` to remote database `certiflow-leads` via `npx wrangler d1 migrations apply certiflow-leads --remote`.
-4. **Live Deployment:**
-   - Deployed code and static assets via `npm run deploy` to `https://certiflowapp-com.svimranmy.workers.dev`.
-   - Live endpoints tested via API calls:
-     - `POST /api/auth/magic-link`: Returned `{"ok":true,"message":"Sign-in link sent."}`.
-     - `POST /api/create-checkout-session`: Successfully returned live Stripe checkout URL.
-5. **Git Sync:**
-   - Changes committed and pushed to `origin/main`.
+## 3. How a customer signs up
+
+1. On the homepage (`#request` or the pricing rows) or on `/signup`, they choose a plan and click **Continue with Google**.
+2. `/auth/google` sends them to Google with `state` and PKCE. `/auth/google/callback` checks the ID token, then creates or updates the user and starts a session.
+3. They go straight on to **Stripe Checkout** in subscription mode:
+   - 14-day trial
+   - card always collected
+   - if there's no card at the trial's end, the subscription is cancelled rather than billed
+   - one trial per account
+4. Stripe sends them back to `/account?checkout=success`. The webhook confirms the subscription, and the account page shows the trial end date and the first charge.
+5. On `/account` they can open **Manage billing** (Stripe's portal: card, plan, invoices, cancel). While a trial or paid plan is running, they also see the onboarding form and the instructions to email 5–10 certificates to support@certiflowapp.com.
+
+You can see sign-ups, trials and onboarding forms at `/admin`. It's protected by HTTP Basic auth with `ADMIN_PASSWORD`, and shows a 404 until that secret is set.
 
 ---
 
-## 3. Key Files & Project Structure
+## 4. Architecture
 
-| File | Purpose |
-| :--- | :--- |
-| `src/worker.js` | Cloudflare Worker entry point handling routing, `/api/audit`, Stripe checkout, magic link auth, and `/admin` dashboard. |
-| `public/index.html` | Landing page, hero, ACORD 25 preview, pricing table with checkout buttons. |
-| `public/login.html` | Magic link passwordless email sign-in page. |
-| `public/styles.css` | Handcrafted responsive CSS (WCAG AA compliant, no heavy external frameworks). |
-| `public/app.js` | Client-side interactions, form handling, animated certificate display. |
-| `migrations/` | D1 SQL migrations (`0001_audit_requests.sql`, `0002_lead_source.sql`, `0003_magic_links.sql`). |
-| `test/worker.test.mjs` | Node.js native test runner suite (16 tests). |
-| `wrangler.jsonc` | Cloudflare Worker configuration, D1 binding, static assets config. |
-| `.dev.vars` | Local development secrets (ignored by Git). |
-| `STRIPE_INTEGRATION_TODO.md` | Stripe setup parameters, webhooks, and next steps reference. |
+Cloudflare Worker `certiflowapp-com` with static assets. Configuration is in `wrangler.jsonc`.
+
+- `public/` holds the source of the static site. `npm run build` (`scripts/build.mjs`) checks every local link and copies it to `dist/`, which isn't committed.
+- `src/` is the Worker. It handles only the routes below; everything else is served from `dist/`.
+- The D1 database `certiflow-leads` (binding `LEADS_DB`) holds leads, accounts, sessions and Stripe event IDs.
+
+| Route | File | Purpose |
+|---|---|---|
+| `GET /auth/google` | `src/accounts.js` | Start Google sign-in (`?plan=starter\|growth\|pro`) |
+| `GET /auth/google/callback` | `src/accounts.js` | Finish sign-in, create session, continue to Stripe |
+| `POST /auth/logout` | `src/accounts.js` | Sign out |
+| `GET /api/me` | `src/accounts.js` | Account and plan state for `/account` and `/signup` |
+| `POST /api/checkout` | `src/billing.js` | Stripe Checkout session for the signed-in user |
+| `POST /api/billing-portal` | `src/billing.js` | Stripe billing portal session |
+| `POST /api/stripe/webhook` | `src/billing.js` | Signed Stripe events, which update the user's plan |
+| `POST /api/audit` | `src/worker.js` | Onboarding / company-details form, stored in `audit_requests` |
+| `GET /admin`, `/admin/leads.csv` | `src/worker.js` | Founder's view of requests and sign-ups |
+
+`src/http.js` holds shared helpers: JSON responses, cookies, hashing.
+
+**Sessions:** the cookie is `__Host-cf_session` (HttpOnly, Secure, SameSite=Lax, 30 days). Only a SHA-256 hash of the token is stored in `sessions`.
+
+**Stripe prices** are created automatically the first time each plan is chosen, in **USD**, with lookup keys `certiflow_starter_monthly_v1`, `certiflow_growth_monthly_v1` and `certiflow_pro_monthly_v1`. The Stripe account is Malaysian; Stripe converts USD payments to MYR on payout. The MYR prices created by hand in the dashboard are not used and can be archived.
+
+**Webhook:** it verifies `Stripe-Signature` and re-reads each subscription from Stripe. It ignores repeated events (`stripe_events`) and never lets an event about an old subscription overwrite a live one.
+
+### Pages
+
+- `/`: homepage
+- `/signup`: plan picker and Google button
+- `/account`: trial and billing status, onboarding
+- `/guides/subcontractor-coi-checklist`, `/guides/premium-audit-uninsured-subcontractors`: guides
+- `/tools/broker-notice`: broker-notice tool
+- `/sample-gap-report` (and `.pdf`): sample report
+- `/privacy`, plus a 404 page
+
+### Database migrations (`migrations/`)
+
+| File | Tables | Status |
+|---|---|---|
+| `0001_audit_requests.sql` | `audit_requests` | applied |
+| `0002_lead_source.sql` | adds `source`, `self_check` | applied |
+| `0003_accounts.sql` | `users`, `sessions`, `stripe_events` | applied |
+| `0003_magic_links.sql` | `magic_links` | applied, **unused** (left from a removed email sign-in; keep the file because it is recorded as applied) |
+
+New migrations should start at `0004_`. Apply them with `npm run db:migrate`.
 
 ---
 
-## 4. Useful Commands
+## 5. Configuration
 
-```bash
-# Run local dev server (http://localhost:8787)
-npm run dev
+### Cloudflare Worker secrets
+Set them in Workers & Pages → certiflowapp-com → Settings → Variables and Secrets, as type **Secret**. Names only, never values:
 
-# Run unit tests
-npm test
+| Secret | Needed for |
+|---|---|
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Google sign-in. Without them, sign-up says "opens shortly". |
+| `STRIPE_SECRET_KEY` | Checkout and billing portal (`sk_test_…` while testing, `sk_live_…` for real payments) |
+| `STRIPE_WEBHOOK_SECRET` | Webhook signature check (`whsec_…`). Without it, trials never appear on `/account`. |
+| `ADMIN_PASSWORD` | `/admin` (12+ characters) |
+| `RESEND_API_KEY`, `NOTIFY_EMAIL`, `NOTIFY_FROM` (optional) | Email alert for each onboarding form |
 
-# Build static assets to dist/
-npm run build
+For local development, put the same names in `.dev.vars`, which is git-ignored.
 
-# Apply D1 migrations to remote production database
-npm run db:migrate
+### Google Cloud (OAuth client, type Web application)
+Authorized redirect URIs:
+- `https://certiflowapp.com/auth/google/callback`
+- `https://certiflowapp-com.svimranmy.workers.dev/auth/google/callback`
 
-# Deploy worker and static assets to Cloudflare
-npm run deploy
+No JavaScript origins are needed.
 
-# Inspect recent audit requests in remote D1
-npm run leads
-```
+### Stripe
+- Webhook endpoint `https://certiflowapp.com/api/stripe/webhook` with events `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated` and `customer.subscription.deleted`.
+- Customer portal settings saved once (Settings → Billing → Customer portal).
+- Statement descriptor `CERTIFLOWAPP.COM`, shortened `CERTIFLOW`.
+- Test with card `4242 4242 4242 4242`. When going live, recreate the webhook in live mode and swap both Stripe secrets.
+
+### Cloudflare Workers Builds
+Production environment, branch `main`:
+- **Disable builds** must be **off**
+- build command `npm run build`
+- deploy command `npx wrangler deploy`
+- root directory empty
+
+Turn on **Disable builds** in the separate *Preview* environment: its preview builds always fail a Worker-identity check and aren't needed.
+
+---
+
+## 6. Open items
+
+- [ ] **Production builds from GitHub stopped after 09:02 UTC on 12 October.** The live site is a manual deploy from 10:31 UTC, and PRs #3 and #4 aren't live until Cloudflare builds `main` again. See section 5.
+- [ ] Confirm all the secrets in section 5 exist in Cloudflare (as of 12 October the Google keys may only have been in a local `.dev.vars`).
+- [ ] Run the end-to-end test: Start free trial → Google → card `4242…` → `/account` shows the trial → the customer shows as Trialing in Stripe → the user appears on `/admin`.
+- [ ] Archive the unused MYR prices in Stripe.
+- [ ] The repo is public, and `docs/` contains prospects' personal contact details. Make the repo private or move `docs/` out.
+- [ ] Set up email routing so support@certiflowapp.com receives mail.
+- [ ] Possible next feature: "Email me a sign-in link" next to Google, for contractors on Microsoft 365. It must create the same `users`/`sessions` records and go through the same trial; don't build a separate flow.
+
+---
+
+## 7. History
+
+| PR / commit | What changed |
+|---|---|
+| #1 | Site audit, honest copy, lead capture in D1, guides, tools, strict CSP, `public/` → `dist/` build |
+| #2 | Premium "security paper" design: intaglio blue, brass, Caslon, guilloché seal |
+| merge into #1 | Combined #1's content and features with #2's design |
+| #3 | Google sign-up, Stripe subscriptions with a 14-day trial, `/signup`, `/account`, webhook, accounts on `/admin` |
+| d844642 (pushed straight to `main` from another tool) | A separate immediate-charge checkout and email login, deployed manually |
+| #4 | Removed d844642's checkout and email login. One sign-up path remains. |
+| this file | Rewritten to match the code; removed key fragments that an earlier version contained |
