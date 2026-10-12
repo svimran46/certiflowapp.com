@@ -14,14 +14,17 @@ function d1() {
   return {
     raw: db,
     prepare(sql) {
-      const bound = (args) => ({
-        first: async () => db.prepare(sql).get(...args) ?? null,
-        all: async () => ({ results: db.prepare(sql).all(...args) }),
-        run: async () => {
-          const r = db.prepare(sql).run(...args);
-          return { success: true, meta: { changes: r.changes } };
-        }
-      });
+      const bound = (args) => {
+        const params = args.length ? Object.fromEntries(args.map((a, i) => [i + 1, a])) : {};
+        return {
+          first: async () => (args.length ? db.prepare(sql).get(params) : db.prepare(sql).get()) ?? null,
+          all: async () => ({ results: args.length ? db.prepare(sql).all(params) : db.prepare(sql).all() }),
+          run: async () => {
+            const r = args.length ? db.prepare(sql).run(params) : db.prepare(sql).run();
+            return { success: true, meta: { changes: r.changes } };
+          }
+        };
+      };
       return { bind: (...args) => bound(args), ...bound([]) };
     }
   };
