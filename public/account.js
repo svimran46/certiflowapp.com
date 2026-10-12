@@ -6,6 +6,8 @@ const $ = (id) => document.getElementById(id);
 const DATE = { month: "long", day: "numeric", year: "numeric" };
 const formatDate = (value) => new Date(value).toLocaleDateString("en-US", DATE);
 const LIVE = new Set(["trialing", "active", "past_due", "unpaid", "incomplete"]);
+// The service itself (sending certificates for review) opens only once a card is on file and the plan is running.
+const SERVICE_OPEN = new Set(["trialing", "active"]);
 
 async function api(path, options = {}) {
   const res = await fetch(path, { headers: { Accept: "application/json", "Content-Type": "application/json" }, ...options });
@@ -67,7 +69,7 @@ function render(me) {
   $("start-trial").hidden = !state.start;
   if (state.button) $("checkout-btn").textContent = state.button;
   $("portal-btn").hidden = !(state.portal || (!state.start && u.hasBillingAccount));
-  $("onboarding").hidden = !LIVE.has(u.status);
+  $("onboarding").hidden = !SERVICE_OPEN.has(u.status);
 
   if (state.start && !me.available.billing) {
     $("start-trial").hidden = true;

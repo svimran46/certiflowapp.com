@@ -5,8 +5,6 @@ import { json, clean } from "./http.js";
 import { startGoogleSignIn, finishGoogleSignIn, currentUser, signOut, describeMe } from "./accounts.js";
 import { handleCheckout, handleBillingPortal, handleStripeWebhook } from "./billing.js";
 
-import Stripe from "stripe";
-
 const SUB_RANGES = new Set(["under-25", "25-50", "50-100", "100+"]);
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const MAX_PER_IP_PER_HOUR = 5;
@@ -150,20 +148,6 @@ async function sameSecret(a, b) {
 }
 
 async function isAdmin(request, env) {
-  const cookie = request.headers.get("Cookie") || "";
-  const match = cookie.match(/certiflow_session=([^;]+)/);
-  if (match && env.LEADS_DB) {
-    try {
-      const token = match[1].trim();
-      const row = await env.LEADS_DB.prepare(
-        "SELECT email FROM magic_links WHERE token = ? AND used_at IS NOT NULL"
-      ).bind(token).first();
-      if (row && (row.email === env.NOTIFY_EMAIL || row.email === env.ADMIN_EMAIL || row.email === "support.certiflowapp@gmail.com" || row.email === "svimranmy@gmail.com")) {
-        return true;
-      }
-    } catch {}
-  }
-
   const header = request.headers.get("Authorization") || "";
   if (!header.startsWith("Basic ")) return false;
   let decoded = "";
@@ -264,192 +248,9 @@ async function handleAdmin(request, env, url) {
   return new Response(html, { headers: { ...ADMIN_HEADERS, "Content-Type": "text/html; charset=utf-8" } });
 }
 
-const PLAN_PRICES = {
-  starter: "price_1UPfmOFaQ2FHfDqc2LthKXdt",
-  growth: "price_1UPfnkFaQ2FHfDqcH97iYzH4",
-  pro: "price_1UPfooFaQ2FHfDqcsjSMYUKa"
-};
-
-async function handleCreateCheckoutSession(request, env) {
-  if (request.method !== "POST") return json(405, { error: "Use POST." });
-
-  const stripe = new Stripe(env.STRIPE_SECRET_KEY);
-
-  let price = PLAN_PRICES.starter;
-  const contentType = request.headers.get("Content-Type") || "";
-  if (contentType.includes("application/json")) {
-    try {
-      const body = await request.json();
-      if (body?.price) price = body.price;
-      else if (body?.plan && PLAN_PRICES[String(body.plan).toLowerCase()]) {
-        price = PLAN_PRICES[String(body.plan).toLowerCase()];
-      }
-    } catch {}
-  } else if (contentType.includes("application/x-www-form-urlencoded")) {
-    try {
-      const formData = await request.formData();
-      const p = formData.get("plan");
-      const pr = formData.get("price");
-      if (pr) price = String(pr);
-      else if (p && PLAN_PRICES[String(p).toLowerCase()]) {
-        price = PLAN_PRICES[String(p).toLowerCase()];
-      }
-    } catch {}
-  }
-
-  const origin = request.headers.get("Origin") || new URL(request.url).origin;
-  const mode = "subscription";
-
-  const sessionParams = {
-    ui_mode: "hosted_page",
-    mode,
-    billing_address_collection: "auto",
-    phone_number_collection: {
-      enabled: false
-    },
-    automatic_tax: {
-      enabled: false
-    },
-    allow_promotion_codes: false,
-    payment_method_collection: "always",
-    submit_type: "auto",
-    integration_identifier: "hosted_mobile_app_0001",
-    origin_context: "mobile_app",
-    success_url: `${origin}/?session_id={CHECKOUT_SESSION_ID}#pricing`,
-    cancel_url: `${origin}/#pricing`,
-    line_items: [
-      {
-        price,
-        quantity: 1
-      }
-    ]
-  };
-
-  const session = await stripe.checkout.sessions.create(sessionParams);
-
-  if (request.headers.get("Accept")?.includes("application/json")) {
-    return json(200, { url: session.url, sessionId: session.id });
-  }
-  return Response.redirect(session.url, 303);
-}
-
-async function handleMagicLinkRequest(request, env) {
-  if (request.method !== "POST") return json(405, { error: "Use POST." });
-
-  let body;
-  try {
-    body = await request.json();
-  } catch {
-    return json(400, { error: "Send JSON body." });
-  }
-
-  const email = clean(body?.email, 200).toLowerCase();
-  if (!email || !EMAIL_RE.test(email)) {
-    return json(422, { error: "Valid email address is required." });
-  }
-
-  if (!env.LEADS_DB) {
-    return json(503, { error: "Service temporarily unavailable." });
-  }
-
-  const token = crypto.randomUUID().replace(/-/g, "") + crypto.randomUUID().replace(/-/g, "");
-  const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString();
-
-  await env.LEADS_DB.prepare(
-    "INSERT INTO magic_links (token, email, expires_at) VALUES (?, ?, ?)"
-  ).bind(token, email, expiresAt).run();
-
-  const origin = request.headers.get("Origin") || new URL(request.url).origin;
-  const magicUrl = `${origin}/api/auth/verify?token=${encodeURIComponent(token)}`;
-
-  if (env.RESEND_API_KEY) {
-    const res = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: { Authorization: "Bearer " + env.RESEND_API_KEY, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        from: env.NOTIFY_FROM || "CertiFlow <onboarding@resend.dev>",
-        to: [email],
-        subject: "Your CertiFlow sign-in link",
-        text: [
-          "Hello,",
-          "",
-          "Click the link below to sign in to CertiFlow:",
-          "",
-          magicUrl,
-          "",
-          "This link expires in 15 minutes and can only be used once.",
-          "",
-          "If you did not request this link, you can safely ignore this email.",
-          "",
-          "— CertiFlow"
-        ].join("\n")
-      })
-    });
-    if (!res.ok) console.error("Resend magic link email failed", res.status, await res.text());
-  } else {
-    console.log("[DEV] Magic link for " + email + ": " + magicUrl);
-  }
-
-  return json(200, { ok: true, message: "Sign-in link sent." });
-}
-
-async function handleMagicLinkVerify(request, env, url) {
-  const token = url.searchParams.get("token");
-  if (!token || !env.LEADS_DB) {
-    return new Response("Invalid request.", { status: 400 });
-  }
-
-  const record = await env.LEADS_DB.prepare(
-    "SELECT token, email, expires_at, used_at FROM magic_links WHERE token = ?"
-  ).bind(token).first();
-
-  if (!record || record.used_at || new Date(record.expires_at) < new Date()) {
-    return new Response(
-      `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Link Expired · CertiFlow</title><style>body{font:16px/1.5 system-ui,sans-serif;margin:40px;background:#eef1f6;color:#171a21}a{color:#1f3c88}.box{background:#fff;padding:36px;max-width:440px;margin:40px auto;border:1px solid #c5cee0;border-radius:6px;text-align:center}</style></head><body><div class="box"><h2>Link expired or invalid</h2><p>This sign-in link is no longer valid. Links expire in 15 minutes and can only be used once.</p><p><a href="/login.html">Request a new sign-in link &rarr;</a></p></div></body></html>`,
-      { status: 400, headers: { "Content-Type": "text/html; charset=utf-8" } }
-    );
-  }
-
-  await env.LEADS_DB.prepare(
-    "UPDATE magic_links SET used_at = datetime('now') WHERE token = ?"
-  ).bind(token).run();
-
-  const isAdminEmail = record.email === env.NOTIFY_EMAIL || record.email === env.ADMIN_EMAIL || record.email === "support.certiflowapp@gmail.com" || record.email === "svimranmy@gmail.com";
-  const target = isAdminEmail ? `${url.origin}/admin` : `${url.origin}/?signed_in=1#pricing`;
-
-  const headers = new Headers();
-  headers.set("Location", target);
-  headers.set("Set-Cookie", `certiflow_session=${token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=604800`);
-  return new Response(null, { status: 302, headers });
-}
-
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
-    if (url.pathname === "/api/auth/magic-link") {
-      try {
-        return await handleMagicLinkRequest(request, env);
-      } catch (err) {
-        console.error("magic link request failed", err && err.stack);
-        return json(500, { error: "Failed to process sign-in link." });
-      }
-    }
-    if (url.pathname === "/api/auth/verify") {
-      try {
-        return await handleMagicLinkVerify(request, env, url);
-      } catch (err) {
-        console.error("magic link verify failed", err && err.stack);
-        return new Response("Failed to verify sign-in link.", { status: 500 });
-      }
-    }
-    if (url.pathname === "/api/create-checkout-session") {
-      try {
-        return await handleCreateCheckoutSession(request, env);
-      } catch (err) {
-        console.error("checkout session creation failed", err && err.stack);
-        return json(500, { error: "Failed to create checkout session." });
-      }
-    }
     if (url.pathname === "/api/audit") {
       try {
         return await handleAuditRequest(request, env, ctx);
@@ -487,4 +288,3 @@ export default {
     return env.ASSETS.fetch(request);
   }
 };
-
