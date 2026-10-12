@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sample gap report · CertiFlow</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/report.css">
+</head>
+<body class="doc">
+  <main class="doc-page">
+    <header class="doc-head">
+      <div>
+        <div class="doc-brand">
+          <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="none" stroke="currentColor" stroke-width="1.2"/><circle cx="16" cy="16" r="11.5" fill="none" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.2 1.6"/><path d="M10.5 16.4l3.6 3.6 7.4-8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          CertiFlow
+        </div>
+        <h1>Subcontractor insurance gap report</h1>
+      </div>
+      <div class="doc-sample">Sample report<br>Fictional companies</div>
+    </header>
+
+    <dl class="doc-meta">
+      <div><dt>Prepared for</dt><dd>Harbor &amp; Main Builders</dd></div>
+      <div><dt>Certificates reviewed</dt><dd>10</dd></div>
+      <div><dt>Review date</dt><dd>October 9, 2026</dd></div>
+      <div><dt>Checked against</dt><dd>Your standard subcontract, Exhibit C</dd></div>
+    </dl>
+
+    <section class="doc-summary" aria-label="Summary">
+      <div class="tally"><span class="tally-n tally-fail">1</span><span>Stop work</span></div>
+      <div class="tally"><span class="tally-n tally-warn">3</span><span>Need action</span></div>
+      <div class="tally"><span class="tally-n tally-pass">6</span><span>Compliant</span></div>
+      <div class="tally-bar" role="img" aria-label="1 stop work, 3 need action, 6 compliant"><span class="seg seg-fail"></span><span class="seg seg-warn"></span><span class="seg seg-pass"></span></div>
+    </section>
+
+    <h2>Findings, highest risk first</h2>
+
+    <article class="finding finding-fail">
+      <h3><span class="dot dot-fail"></span>Tri-Valley Roofing Co. <span class="trade">Roofing</span></h3>
+      <dl>
+        <div><dt>Required</dt><dd>Workers’ comp, statutory; waiver of subrogation (WC 00 03 13)</dd></div>
+        <div><dt>Found</dt><dd>Workers’ comp policy WC-2093371 expired 09/26/2026. No renewal certificate on file. Waiver endorsement not attached.</dd></div>
+        <div><dt>Why it matters</dt><dd>The crew is on site without workers’ comp. An injury claim can fall back on you as the general contractor.</dd></div>
+        <div><dt>Next step</dt><dd>Hold site access. Notice drafted to Bellmont Underwriting Services requesting the renewed certificate and waiver.</dd></div>
+      </dl>
+    </article>
+
+    <article class="finding finding-warn">
+      <h3><span class="dot dot-warn"></span>Lone Pine Framing LLC <span class="trade">Framing</span></h3>
+      <dl>
+        <div><dt>Required</dt><dd>Additional insured, ongoing and completed operations (CG 20 10 and CG 20 37 or equivalent)</dd></div>
+        <div><dt>Found</dt><dd>CG 20 10 attached. No completed-operations endorsement in the PDF.</dd></div>
+        <div><dt>Why it matters</dt><dd>Claims that surface after handover, such as framing defects, won’t reach this sub’s policy.</dd></div>
+        <div><dt>Next step</dt><dd>Notice drafted to Mesa Ridge Insurance Group requesting the CG 20 37 page.</dd></div>
+      </dl>
+    </article>
+
+    <article class="finding finding-warn">
+      <h3><span class="dot dot-warn"></span>Clearline Glass &amp; Glazing <span class="trade">Glazing</span></h3>
+      <dl>
+        <div><dt>Required</dt><dd>General liability $1M each occurrence, $2M aggregate</dd></div>
+        <div><dt>Found</dt><dd>$1M each occurrence, $1M aggregate. No umbrella listed.</dd></div>
+        <div><dt>Why it matters</dt><dd>The aggregate is shared across all of this sub’s jobs. One claim elsewhere can leave little or nothing for yours.</dd></div>
+        <div><dt>Next step</dt><dd>Notice drafted to Northfork Agency requesting a $2M aggregate or an umbrella policy.</dd></div>
+      </dl>
+    </article>
+
+    <article class="finding finding-warn">
+      <h3><span class="dot dot-warn"></span>Brightwire Electric Inc. <span class="trade">Electrical</span></h3>
+      <dl>
+        <div><dt>Required</dt><dd>All policies in force for the duration of the work</dd></div>
+        <div><dt>Found</dt><dd>General liability and auto renew 10/30/2026, in 21 days. Their scheduled work runs into December.</dd></div>
+        <div><dt>Why it matters</dt><dd>Without a renewal certificate, they’ll be uninsured on your site from October 30.</dd></div>
+        <div><dt>Next step</dt><dd>Renewal request drafted to Copperline Insurance, with a follow-up set for 10/23.</dd></div>
+      </dl>
+    </article>
+
+    <h2>Compliant, no action needed</h2>
+    <ul class="doc-ok">
+      <li><strong>Northgate Mechanical Inc.</strong><span>HVAC</span><span>Next expiration 06/15/2027</span></li>
+      <li><strong>Stonebridge Concrete LLC</strong><span>Concrete</span><span>Next expiration 04/01/2027</span></li>
+      <li><strong>Redline Fire Protection</strong><span>Fire sprinkler</span><span>Next expiration 02/28/2027</span></li>
+      <li><strong>Keystone Drywall &amp; Acoustics</strong><span>Drywall</span><span>Next expiration 05/10/2027</span></li>
+      <li><strong>Summit Steel Erectors</strong><span>Structural steel</span><span>Next expiration 03/31/2027</span></li>
+      <li><strong>Pioneer Plumbing Co.</strong><span>Plumbing</span><span>Next expiration 01/15/2027</span></li>
+    </ul>
+
+    <footer class="doc-foot">
+      <p>Each certificate and its endorsement pages were checked against your requirements, and every finding was reviewed by a person. This is a sample. All companies, brokers and policy numbers are fictional. CertiFlow reviews documents against your requirements; it is not an insurance agency and does not give legal advice.</p>
+      <p class="doc-cta">Get this report for your own subs, free: <strong>certiflowapp.com</strong></p>
+    </footer>
+  </main>
+</body>
+</html>

@@ -32,57 +32,62 @@ CertiFlow is a self-service compliance portal starting at **$49/month**:
 
 ---
 
-## 🚀 Live Demo & Features
+## Site and deployment
 
-The web platform in this repository (`index.html`) includes:
+The site is a static page in `public/` (built into `dist/`) served by a Cloudflare Worker with static assets (`wrangler.jsonc`). One small script, `src/worker.js`, handles the free-audit form at `POST /api/audit` and stores requests in the D1 database `certiflow-leads`.
 
-- **Security-paper design:** Intaglio blue, brass and engraved guilloché seals, set in Libre Caslon and Instrument Sans. Hand-written CSS with no framework or build step.
-- **Interactive Auditor Sandbox:** Live scenario simulator demonstrating:
-  - Scenario A: Fully Compliant HVAC Subcontractor (Audit badge issued).
-  - Scenario B: Missing CG 20 37 Completed Operations Endorsement (Deficiency alert).
-  - Scenario C: Lapsed Workers Compensation (Stop-work safety red flag).
-- **Automated Broker Message Generator:** 1-click copyable deficiency notifications.
-- **Free Audit Request Dialog:** Captures GC company name, contact, active subcontractor volume and plan of interest, then opens a pre-filled email to support@certiflowapp.com.
-- **Transparent Tiered Pricing:** Starter ($49/mo), Commercial Growth ($99/mo), and Commercial Pro ($199/mo).
+```
+public/            static site: index.html, styles.css, app.js, fonts, _headers,
+                   guides/ (COI checklist, premium audits), tools/ (broker notice), sample-gap-report (.html and .pdf), privacy, 404
+src/worker.js      audit-request API -> D1
+migrations/        D1 schema
+scripts/build.mjs  link check, then copy public/ to dist/ (npm run build)
+docs/              strategy notes (see AUDIT.md: move these out of a public repo)
+```
+
+| Command | What it does |
+|---|---|
+| `npm run dev` | Local server at http://localhost:8787 (run `npx wrangler d1 migrations apply certiflow-leads --local` once first) |
+| `npm run build` | Checks every local link and asset, then writes `dist/` |
+| `npm test` | Runs the audit-request API tests (`test/`) |
+| `npm run deploy` | Deploys to the `certiflowapp-com` Worker |
+| `npm run leads` | Lists the latest audit requests from D1 |
+
+Workers Builds (Git integration) deploys `main` automatically: build command `npm run build`, deploy command `npx wrangler deploy`. See `AUDIT.md` for the October 2026 site audit and open items.
 
 ---
 
-## 🌐 Instant Cloudflare Pages Deployment (Unlimited Free Tier)
+## Tracking outreach and reading leads
 
-Cloudflare Pages provides unlimited bandwidth, 500 builds/month, and enterprise-grade DDoS protection with zero build limits.
+Every audit request stores where the visitor first came from: any `utm_*` tags or a short `ref` code in the link, plus the referring site. It also stores their answers to the on-page self-check. Tag every link you send so you can see which emails and campaigns turn into audits.
 
-### 2-Minute Setup on Cloudflare Pages:
-1. Log in to your [Cloudflare Dashboard](https://dash.cloudflare.com/) and navigate to **Workers & Pages**.
-2. Click **Create Application** $\rightarrow$ **Pages** $\rightarrow$ **Connect to Git**.
-3. Select your GitHub repository: `svimran46/certiflowapp.com`.
-4. Configure Build Settings:
-   - **Framework preset:** `None`
-   - **Build command:** `npm run build`
-   - **Build output directory:** `dist`
-5. Click **Save and Deploy**. Your site will build in 5 seconds and deploy live!
-6. Under **Custom domains**, click **Set up a domain**, enter `certiflowapp.com`, and Cloudflare automatically provisions SSL and global DNS routing.
+| Where the link goes | Link to use |
+|---|---|
+| Cold email, template A (finance / office admin) | `https://certiflowapp.com/?utm_source=email&utm_campaign=dfw-oct&utm_content=template-a` |
+| Cold email, template B (compliance lead) | `https://certiflowapp.com/?utm_source=email&utm_campaign=dfw-oct&utm_content=template-b` |
+| LinkedIn message | `https://certiflowapp.com/?utm_source=linkedin` |
+| Follow-up after a phone call | `https://certiflowapp.com/?ref=call` |
+| Attach or link the sample report | `https://certiflowapp.com/sample-gap-report.pdf` |
+| Send the checklist as a helpful first touch | `https://certiflowapp.com/guides/subcontractor-coi-checklist?utm_source=email&utm_content=checklist` |
+| Give a useful tool to an office manager | `https://certiflowapp.com/tools/broker-notice?utm_source=email&utm_content=notice-tool` |
+| Follow-up for finance or owners worried about audits | `https://certiflowapp.com/guides/premium-audit-uninsured-subcontractors?utm_source=email&utm_content=premium-audit` |
 
-### Deploy to GitHub Pages:
-1. Go to the repository **Settings $\rightarrow$ Pages**.
-2. Under **Build and deployment**, select `Deploy from a branch` $\rightarrow$ `main` $\rightarrow$ `/ (root)`.
-3. Under **Custom domain**, enter `certiflowapp.com` and click Save.
-4. Check **Enforce HTTPS**.
+**See requests in your browser:** set a password once with `npx wrangler secret put ADMIN_PASSWORD` (12+ characters), then open `https://certiflowapp.com/admin` and sign in with any username and that password. It lists the latest 500 requests, with their source and self-check answers, and has a CSV download. Until the secret is set, `/admin` is a normal 404.
 
----
+From a terminal: `npm run leads`. To compare sources in the D1 console:
 
-## 📁 Repository Structure
-
+```sql
+SELECT source, COUNT(*) AS requests FROM audit_requests GROUP BY source ORDER BY requests DESC;
 ```
-certiflowapp.com/
-├── index.html                  # Production landing page & interactive audit portal
-├── favicon.svg                 # Site icon
-├── og-image.png                # Social share preview (1200×630)
-├── README.md                   # Platform documentation & deployment guide
-├── docs/
-│   ├── initial-prospect-list.csv   # 18 verified commercial GCs for initial outreach
-│   ├── day-1-action-guide.md       # Cold outreach scripts, phone pitch, & audit prompts
-│   └── final-recommendation.md     # Market teardown, unit economics, & validation roadmap
+
+**Email alerts for new requests (optional):** create a free [Resend](https://resend.com) account, then:
+
+```sh
+npx wrangler secret put RESEND_API_KEY   # the API key from Resend
+npx wrangler secret put NOTIFY_EMAIL     # the address you signed up to Resend with
 ```
+
+Each new request then arrives in your inbox, with reply-to set to the contractor. Once `certiflowapp.com` is verified in Resend, set `NOTIFY_FROM` (for example `CertiFlow <leads@certiflowapp.com>`) to send to any address.
 
 ---
 
