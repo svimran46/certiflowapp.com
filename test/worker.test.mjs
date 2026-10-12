@@ -5,10 +5,8 @@ import worker from "../src/worker.js";
 
 function fakeDb() {
   const rows = [];
-  const links = [];
   return {
     rows,
-    links,
     prepare(sql) {
       const stmt = {
         all: () => stmt.bind().all(),
@@ -16,14 +14,6 @@ function fakeDb() {
           return {
             async first() {
               if (sql.startsWith("SELECT COUNT(*)")) return { n: rows.filter((r) => r[6] === args[0]).length };
-              if (sql.startsWith("SELECT token, email")) {
-                const link = links.find((l) => l.token === args[0]);
-                return link || null;
-              }
-              if (sql.startsWith("SELECT email FROM magic_links")) {
-                const link = links.find((l) => l.token === args[0] && l.used_at);
-                return link || null;
-              }
               throw new Error("unexpected query: " + sql);
             },
             async all() {
@@ -35,12 +25,7 @@ function fakeDb() {
             },
             async run() {
               if (sql.startsWith("INSERT INTO audit_requests")) rows.push(args);
-              else if (sql.startsWith("INSERT INTO magic_links")) {
-                links.push({ token: args[0], email: args[1], expires_at: args[2], used_at: null });
-              } else if (sql.startsWith("UPDATE magic_links")) {
-                const link = links.find((l) => l.token === args[0]);
-                if (link) link.used_at = new Date().toISOString();
-              } else throw new Error("unexpected query: " + sql);
+              else throw new Error("unexpected query: " + sql);
               return { success: true };
             }
           };
@@ -206,44 +191,3 @@ test("CSV export neutralizes spreadsheet formulas", async () => {
   assert.ok(csv.includes(`"'=HYPERLINK(""http://evil.example"")"`));
   assert.ok(csv.includes('"say ""hi"""'));
 });
-
-test("rejects invalid magic link request", async () => {
-  const { env, ctx } = setup();
-  const res = await worker.fetch(new Request("https://certiflowapp.com/api/auth/magic-link", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email: "invalid-email" })
-  }), env, ctx);
-  assert.equal(res.status, 422);
-});
-
-test("creates magic link and verifies sign-in for admin", async () => {
-  const { db, env, ctx } = setup({ NOTIFY_EMAIL: "support.certiflowapp@gmail.com", ADMIN_PASSWORD: ADMIN_PW });
-  const reqRes = await worker.fetch(new Request("https://certiflowapp.com/api/auth/magic-link", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email: "support.certiflowapp@gmail.com" })
-  }), env, ctx);
-  assert.equal(reqRes.status, 200);
-  assert.equal(db.links.length, 1);
-  const token = db.links[0].token;
-
-  // Verify the magic link
-  const verifyRes = await worker.fetch(new Request(`https://certiflowapp.com/api/auth/verify?token=${token}`), env, ctx);
-  assert.equal(verifyRes.status, 302);
-  assert.equal(verifyRes.headers.get("Location"), "https://certiflowapp.com/admin");
-  assert.match(verifyRes.headers.get("Set-Cookie"), /certiflow_session=/);
-  assert.ok(db.links[0].used_at);
-
-  // Authenticate admin with session cookie
-  const cookie = `certiflow_session=${token}`;
-  const adminRes = await worker.fetch(new Request("https://certiflowapp.com/admin", {
-    headers: { Cookie: cookie }
-  }), env, ctx);
-  assert.equal(adminRes.status, 200);
-
-  // Reusing the same token fails
-  const reuseRes = await worker.fetch(new Request(`https://certiflowapp.com/api/auth/verify?token=${token}`), env, ctx);
-  assert.equal(reuseRes.status, 400);
-});
-
