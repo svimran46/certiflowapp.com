@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Your account · CertiFlow</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#0D192B">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="preload" href="/fonts/libre-caslon-display-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/instrument-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/account.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap header-row">
+      <a class="logo" href="/" aria-label="CertiFlow home">
+        <svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="15" fill="none" stroke="currentColor" stroke-width="1.2"/><circle cx="16" cy="16" r="11.5" fill="none" stroke="currentColor" stroke-width="0.8" stroke-dasharray="1.2 1.6"/><path d="M10.5 16.4l3.6 3.6 7.4-8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>CertiFlow</span>
+      </a>
+      <form class="header-signout" method="post" action="/auth/logout">
+        <button type="submit" class="nav-btn">Sign out</button>
+      </form>
+    </div>
+  </header>
+
+  <main id="main" class="page account">
+    <div class="wrap">
+      <p class="account-loading" id="account-loading" role="status">Loading your account…</p>
+
+      <div id="account" hidden>
+        <p class="kicker" id="account-email"></p>
+        <h1 id="account-title">Your account</h1>
+
+        <p class="account-banner" id="account-banner" role="status" hidden></p>
+
+        <section class="account-card" id="status-card" aria-labelledby="status-title">
+          <h2 id="status-title"></h2>
+          <p id="status-body"></p>
+
+          <div id="start-trial" hidden>
+            <fieldset class="plan-picker">
+              <legend>Choose a plan</legend>
+              <label class="plan-option"><input type="radio" name="plan" value="starter"><span class="plan-option-name">Starter</span><span class="plan-option-meta">Up to 25 active subs</span><span class="plan-option-price">$49<small>/mo</small></span></label>
+              <label class="plan-option"><input type="radio" name="plan" value="growth" checked><span class="plan-option-name">Growth</span><span class="plan-option-meta">Up to 75 active subs</span><span class="plan-option-price">$99<small>/mo</small></span></label>
+              <label class="plan-option"><input type="radio" name="plan" value="pro"><span class="plan-option-name">Pro</span><span class="plan-option-meta">Up to 200 active subs</span><span class="plan-option-price">$199<small>/mo</small></span></label>
+            </fieldset>
+            <button class="btn btn-block" type="button" id="checkout-btn">Add card and start free trial</button>
+          </div>
+
+          <button class="btn btn-quiet" type="button" id="portal-btn" hidden>Manage billing</button>
+          <p class="form-status is-error" id="billing-error" role="alert" hidden></p>
+        </section>
+
+        <section class="account-card" id="onboarding" aria-labelledby="onboarding-title" hidden>
+          <h2 id="onboarding-title">Get your first gap report</h2>
+          <p>Tell us about your company, then email 5–10 current subcontractor certificates, with their endorsement pages, to <a href="mailto:support@certiflowapp.com?subject=Certificates%20for%20my%20gap%20report">support@certiflowapp.com</a> from <span data-me="email"></span>. Your report arrives within 24 hours of receiving them.</p>
+
+          <form class="form account-form" id="onboarding-form" novalidate>
+            <div class="field">
+              <label for="f-company">Company name</label>
+              <input id="f-company" name="company" type="text" autocomplete="organization" required maxlength="120">
+            </div>
+            <div class="field-pair">
+              <div class="field">
+                <label for="f-phone">Phone <span class="opt">(optional)</span></label>
+                <input id="f-phone" name="phone" type="tel" autocomplete="tel" maxlength="40">
+              </div>
+              <div class="field">
+                <label for="f-subs">Active subcontractors</label>
+                <select id="f-subs" name="subs">
+                  <option value="under-25">Fewer than 25</option>
+                  <option value="25-50" selected>25–50</option>
+                  <option value="50-100">50–100</option>
+                  <option value="100+">More than 100</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label for="f-notes">Your insurance requirements, or anything we should know <span class="opt">(optional)</span></label>
+              <textarea id="f-notes" name="notes" rows="3" maxlength="2000" placeholder="For example: $1M/$2M GL, CG 20 10 and CG 20 37 required, carrier audit in March"></textarea>
+            </div>
+            <div class="hp" aria-hidden="true">
+              <label for="f-website">Leave this empty</label>
+              <input id="f-website" name="website" type="text" tabindex="-1" autocomplete="off">
+            </div>
+            <p class="form-status" id="onboarding-status" role="status" aria-live="polite"></p>
+            <button class="btn" type="submit" id="onboarding-submit">Save company details</button>
+          </form>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-row">
+      <span>© 2026 CertiFlow</span>
+      <a href="/guides/subcontractor-coi-checklist">COI checklist</a>
+      <a href="/tools/broker-notice">Broker notice tool</a>
+      <a href="/privacy">Privacy</a>
+      <a href="mailto:support@certiflowapp.com">support@certiflowapp.com</a>
+      <span class="footer-note">CertiFlow reviews documents against your requirements. It is not an insurance agency and does not give legal advice.</span>
+    </div>
+  </footer>
+</body>
+</html>

@@ -8,7 +8,7 @@ let missing = 0;
 for (const page of readdirSync(root).filter((f) => f.endsWith(".html"))) {
   const html = readFileSync(join(root, page), "utf8");
   for (const [, ref] of html.matchAll(/(?:href|src)="(\/[^"#?]*)"/g)) {
-    if (ref === "/" || ref.startsWith("/api/")) continue;
+    if (ref === "/" || ref.startsWith("/api/") || ref.startsWith("/auth/")) continue;
     const candidates = [join(root, ref), join(root, ref + ".html"), join(root, ref, "index.html")];
     if (!candidates.some((p) => existsSync(p))) {
       console.error(`${page}: missing ${ref}`);
