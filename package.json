@@ -4,6 +4,6 @@
   "private": true,
   "description": "CertiFlow - Automated Subcontractor Insurance (COI) & Endorsement Compliance Portal",
   "scripts": {
-    "build": "node -e \"const fs=require('fs'); fs.mkdirSync('dist', {recursive: true}); fs.copyFileSync('index.html', 'dist/index.html'); if(fs.existsSync('_headers')) fs.copyFileSync('_headers', 'dist/_headers'); console.log('Build complete: output in dist/');\""
+    "build": "node -e \"const fs=require('fs'); fs.mkdirSync('dist', {recursive: true}); for (const f of ['index.html', '_headers', 'favicon.svg', 'og-image.png']) { if (fs.existsSync(f)) fs.copyFileSync(f, 'dist/' + f); } console.log('Build complete: output in dist/');\""
   }
 }

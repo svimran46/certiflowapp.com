@@ -36,13 +36,13 @@ CertiFlow is a self-service compliance portal starting at **$49/month**:
 
 The web platform in this repository (`index.html`) includes:
 
-- **Institutional Design:** High-trust navy and emerald color palette built with Tailwind CSS.
+- **Security-paper design:** Intaglio blue, brass and engraved guilloché seals, set in Libre Caslon and Instrument Sans. Hand-written CSS with no framework or build step.
 - **Interactive Auditor Sandbox:** Live scenario simulator demonstrating:
   - Scenario A: Fully Compliant HVAC Subcontractor (Audit badge issued).
   - Scenario B: Missing CG 20 37 Completed Operations Endorsement (Deficiency alert).
   - Scenario C: Lapsed Workers Compensation (Stop-work safety red flag).
 - **Automated Broker Message Generator:** 1-click copyable deficiency notifications.
-- **Interactive Lead Capture Modal:** Captures GC company name, active subcontractor volume, and optional sample PDF upload for free 24-hour audits.
+- **Free Audit Request Dialog:** Captures GC company name, contact, active subcontractor volume and plan of interest, then opens a pre-filled email to support@certiflowapp.com.
 - **Transparent Tiered Pricing:** Starter ($49/mo), Commercial Growth ($99/mo), and Commercial Pro ($199/mo).
 
 ---
@@ -75,6 +75,8 @@ Cloudflare Pages provides unlimited bandwidth, 500 builds/month, and enterprise-
 ```
 certiflowapp.com/
 ├── index.html                  # Production landing page & interactive audit portal
+├── favicon.svg                 # Site icon
+├── og-image.png                # Social share preview (1200×630)
 ├── README.md                   # Platform documentation & deployment guide
 ├── docs/
 │   ├── initial-prospect-list.csv   # 18 verified commercial GCs for initial outreach
