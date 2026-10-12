@@ -204,81 +204,6 @@ function initCopy() {
   });
 }
 
-function mailtoFallback(data) {
-  const body =
-    "Company: " + data.company + "\nName: " + data.name + "\nEmail: " + data.email +
-    "\nPhone: " + (data.phone || "") + "\nActive subcontractors: " + data.subs +
-    (data.selfCheck ? "\nSelf-check: " + data.selfCheck : "") + "\n\n" + (data.notes || "");
-  return "mailto:support@certiflowapp.com?subject=" + encodeURIComponent("Free COI audit request: " + data.company) +
-    "&body=" + encodeURIComponent(body);
-}
-
-function initForm() {
-  const form = document.getElementById("audit-form");
-  if (!form) return;
-  const status = document.getElementById("form-status");
-  const submit = document.getElementById("form-submit");
-
-  const setStatus = (msg, kind, link) => {
-    status.className = "form-status" + (kind ? " is-" + kind : "");
-    status.textContent = msg;
-    if (link) {
-      status.append(" ");
-      status.append(el("a", { href: link.href }, link.text));
-    }
-  };
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const required = ["f-company", "f-name", "f-email"];
-    let firstBad = null;
-    for (const id of required) {
-      const input = document.getElementById(id);
-      const ok = input.value.trim() !== "" && input.checkValidity();
-      input.setAttribute("aria-invalid", String(!ok));
-      if (!ok && !firstBad) firstBad = input;
-    }
-    if (firstBad) {
-      const label = form.querySelector('label[for="' + firstBad.id + '"]').textContent.replace(/\(optional\)/, "").trim();
-      setStatus(firstBad.id === "f-email" && firstBad.value.trim()
-        ? "Enter a valid email address, like name@company.com."
-        : "Fill in " + label.toLowerCase() + " to continue.", "error");
-      firstBad.focus();
-      return;
-    }
-
-    const data = Object.fromEntries(new FormData(form).entries());
-    data.source = VISIT_SOURCE;
-    data.selfCheck = selfCheckSummary;
-    submit.disabled = true;
-    submit.textContent = "Sending…";
-    setStatus("", null);
-
-    try {
-      const res = await fetch("/api/audit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
-      if (!res.ok) {
-        let message = "";
-        try { message = (await res.json()).error || ""; } catch {}
-        throw new Error(res.status === 429 && message ? message : "");
-      }
-      const confirm = document.getElementById("audit-confirm");
-      confirm.querySelector('[data-confirm="name"]').textContent = ", " + data.name.split(" ")[0];
-      confirm.querySelector('[data-confirm="email"]').textContent = data.email;
-      form.hidden = true;
-      confirm.hidden = false;
-      confirm.focus();
-    } catch (err) {
-      setStatus(err.message || "The request didn’t go through.", "error", { href: mailtoFallback(data), text: "Send it by email instead" });
-      submit.disabled = false;
-      submit.textContent = "Request my free audit";
-    }
-  });
-}
-
 // ---------- Certificate self-check ----------
 const SELF_CHECK = [
   {
@@ -313,7 +238,6 @@ const SELF_CHECK = [
   }
 ];
 const SC_OPTIONS = [["yes", "Yes"], ["no", "No"], ["unsure", "Not sure"]];
-let selfCheckSummary = "";
 
 function initSelfCheck() {
   const form = document.getElementById("sc-form");
@@ -369,7 +293,7 @@ function initSelfCheck() {
     } else if (answered === SELF_CHECK.length) {
       state = "pass";
       title.textContent = "This certificate looks solid";
-      body.textContent = "That’s one sub. A free audit checks the rest the same way, in 24 hours.";
+      body.textContent = "That’s one sub. A free trial checks the rest the same way, in 24 hours.";
     } else if (answered) {
       title.textContent = "So far, so good";
       body.textContent = (SELF_CHECK.length - answered) + " questions to go.";
@@ -387,11 +311,13 @@ function initSelfCheck() {
     }
     wasComplete = complete;
 
-    selfCheckSummary = answered
+    const summary = answered
       ? "gaps: " + (no.map((g) => g.short).join(", ") || "none") +
         "; unsure: " + (unsure.map((g) => g.short).join(", ") || "none") +
         "; answered " + answered + "/" + SELF_CHECK.length
       : "";
+    // Kept for this tab so the onboarding form in the account page can include it.
+    try { sessionStorage.setItem("cf-selfcheck", summary); } catch {}
   };
 
   form.addEventListener("change", update);
@@ -420,7 +346,7 @@ function readSource() {
   } catch {}
   return current;
 }
-const VISIT_SOURCE = readSource();
+readSource(); // remembers the first-touch source in sessionStorage for the onboarding form
 
 function initChrome() {
   const header = document.querySelector(".site-header");
@@ -452,7 +378,6 @@ function initPrint() {
 
 initTabs();
 initCopy();
-initForm();
 initSelfCheck();
 initChrome();
 initPrint();
@@ -546,3 +471,35 @@ function initEngraving() {
 }
 
 initEngraving();
+
+// ---------- Plan picker and Google sign-up link ----------
+const SIGNUP_ERRORS = {
+  cancelled: "Google sign-in was cancelled. Pick a plan and try again when you’re ready.",
+  expired: "That sign-in took too long or was opened in another tab. Please try again.",
+  google: "Google couldn’t confirm your account. Please try again, or use a different Google account.",
+  unavailable: "Sign-up opens shortly. Email support@certiflowapp.com and we’ll start your trial for you."
+};
+
+function initPlanPickers() {
+  const params = new URLSearchParams(location.search);
+  document.querySelectorAll("[data-signup]").forEach((box) => {
+    const link = box.querySelector("[data-google-link]");
+    const radios = Array.from(box.querySelectorAll('input[name="plan"]'));
+    const wanted = radios.find((r) => r.value === params.get("plan"));
+    if (wanted) wanted.checked = true;
+    const sync = () => {
+      const checked = radios.find((r) => r.checked);
+      if (link && checked) link.href = "/auth/google?plan=" + encodeURIComponent(checked.value);
+    };
+    radios.forEach((r) => r.addEventListener("change", sync));
+    sync();
+  });
+  const error = document.getElementById("signup-error");
+  const message = SIGNUP_ERRORS[params.get("error")];
+  if (error && message) {
+    error.textContent = message;
+    error.hidden = false;
+  }
+}
+
+initPlanPickers();

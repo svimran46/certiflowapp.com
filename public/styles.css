@@ -740,3 +740,76 @@ input[aria-invalid="true"] { border-color: var(--fail); }
 @media (max-width: 560px) { .sheet-head { flex-direction: column-reverse; align-items: flex-start; } .stamp { align-self: flex-end; margin-bottom: -8px; } }
 body { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; }
 body > main { flex: 1 0 auto; }
+
+/* ---------- Sign-up: plan picker and Google button ---------- */
+.signup { padding: clamp(56px, 8vw, 112px) 0; }
+.signup-grid { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); gap: clamp(40px, 6vw, 96px); align-items: start; }
+.signup h1 { font-size: var(--step-3); }
+@media (max-width: 900px) { .signup-grid { grid-template-columns: 1fr; } }
+.trial-steps { list-style: none; counter-reset: trial; margin: 36px 0 0; padding: 0; max-width: 34em; }
+.trial-steps li { counter-increment: trial; position: relative; padding: 16px 0 16px 48px; border-top: 1px solid var(--rule-soft); color: var(--ink-soft); }
+.trial-steps li::before { content: counter(trial, upper-roman); position: absolute; left: 0; top: 14px; font: 400 1.375rem/1 var(--display); color: var(--brass); }
+.trial-steps strong { display: block; color: var(--ink); font-weight: 600; }
+
+.signup-card { position: relative; background: var(--sheet); color: var(--ink); padding: clamp(28px, 4vw, 40px); border-radius: 6px; box-shadow: var(--shadow-paper); border: 1px solid var(--rule-soft); }
+.signup-card::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--brass); border-radius: 6px 6px 0 0; }
+.request .signup-card { box-shadow: 0 50px 100px -40px rgba(0, 0, 0, 0.6); border: 0; }
+.signup-card .fineprint { color: var(--ink-faint); }
+.signup-card .fineprint a, .request .signup-card a { color: var(--intaglio); }
+.signup-signin { margin-top: 14px; font-size: var(--step--1); color: var(--ink-soft); }
+.signup-card .form-status { margin-bottom: 18px; }
+
+.plan-picker { border: 0; margin: 0 0 20px; padding: 0; min-width: 0; display: grid; gap: 10px; }
+.plan-picker legend { font: 400 1.1875rem/1.3 var(--serif); padding: 0; margin-bottom: 14px; }
+.plan-option {
+  position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 16px; align-items: baseline;
+  margin: 0; padding: 14px 18px 14px 46px; cursor: pointer;
+  background: var(--white); border: 1px solid var(--rule); border-radius: 4px; color: var(--ink);
+  transition: border-color .2s var(--ease), box-shadow .2s var(--ease);
+}
+.plan-option:hover { border-color: var(--ink); }
+.plan-option input { position: absolute; left: 18px; top: 18px; width: 16px; height: 16px; min-height: 0; margin: 0; padding: 0; accent-color: var(--intaglio); }
+.plan-option:has(input:checked) { border-color: var(--intaglio); box-shadow: 0 0 0 1px var(--intaglio); }
+.plan-option:has(input:focus-visible) { outline: 2px solid var(--brass); outline-offset: 2px; }
+.plan-option-name { font: 400 1.1875rem/1.2 var(--serif); }
+.plan-option-meta { grid-column: 1; font-size: 0.8125rem; font-weight: 400; color: var(--ink-faint); }
+.plan-option-price { grid-column: 2; grid-row: 1 / span 2; align-self: center; font: 400 1.75rem/1 var(--display); }
+.plan-option-price small { font: 400 0.8125rem var(--body); color: var(--ink-faint); margin-left: 2px; }
+
+/* Follows Google's sign-in button guidance: white, neutral border, the multicolour G. */
+.google-btn {
+  display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%;
+  min-height: 50px; padding: 0 20px; border-radius: 4px;
+  background: #fff; color: #1f1f1f; border: 1px solid #747775;
+  font: 500 0.9375rem/1 var(--body); text-decoration: none; cursor: pointer;
+  transition: background-color .2s var(--ease), box-shadow .2s var(--ease);
+}
+.google-btn:hover { background: #f8f9fa; color: #1f1f1f; box-shadow: 0 1px 3px rgba(60, 64, 67, 0.3); }
+.google-btn svg { width: 20px; height: 20px; flex: none; }
+.request .google-btn { color: #1f1f1f; }
+
+/* ---------- Account ---------- */
+.header-signout { margin: 0 0 0 auto; }
+.nav-btn { background: none; border: 0; padding: 6px 0; cursor: pointer; color: var(--on-dark-soft); font: 400 0.9375rem var(--body); border-bottom: 1px solid transparent; }
+.nav-btn:hover { color: #fff; border-bottom-color: var(--brass-light); }
+.account h1 { margin-bottom: 0; }
+.account .kicker { margin-bottom: 14px; }
+.account-loading { color: var(--ink-soft); }
+.account-banner { margin-top: 28px; max-width: 46rem; padding: 14px 18px; background: var(--pass-wash); border-left: 3px solid var(--pass); border-radius: 0 3px 3px 0; color: var(--ink) !important; }
+.account-card { max-width: 46rem; margin-top: 32px; padding: clamp(24px, 3.5vw, 40px); background: var(--white); border: 1px solid var(--rule-soft); border-top: 3px solid var(--intaglio); border-radius: 4px; box-shadow: var(--shadow-paper); }
+.account-card h2 { font-size: clamp(1.625rem, 1.3rem + 1.2vw, 2.125rem); margin: 0; }
+.account-card > p { margin-top: 12px; }
+.account-card #start-trial { margin-top: 28px; }
+.account-card #portal-btn { margin-top: 24px; }
+.account-card .form-status { margin-top: 16px; }
+.account-form { margin-top: 24px; padding: 0; box-shadow: none; background: transparent; }
+
+/* Pricing rows with a start-trial link */
+.price-row { grid-template-columns: 1fr .9fr .8fr 2.6fr 10.5rem; }
+.price-cta { justify-self: end; align-self: center; }
+.price-cta .btn { white-space: nowrap; }
+@media (max-width: 760px) {
+  .price-row { grid-template-columns: 1fr auto; }
+  .price-row .price-cta { grid-column: 1 / -1; justify-self: stretch; margin-top: 10px; }
+  .price-row .price-cta .btn { width: 100%; }
+}

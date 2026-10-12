@@ -1,5 +1,9 @@
-// Handles the free-audit request form. Everything else is served from ./public
-// by Workers static assets before this script runs.
+// API routes: audit requests, accounts (Sign in with Google), Stripe billing and the founder's
+// leads page. Everything else is served from ./public by Workers static assets before this runs.
+
+import { json, clean } from "./http.js";
+import { startGoogleSignIn, finishGoogleSignIn, currentUser, signOut, describeMe } from "./accounts.js";
+import { handleCheckout, handleBillingPortal, handleStripeWebhook } from "./billing.js";
 
 import Stripe from "stripe";
 
@@ -7,17 +11,6 @@ const SUB_RANGES = new Set(["under-25", "25-50", "50-100", "100+"]);
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const MAX_PER_IP_PER_HOUR = 5;
 const MAX_BODY_BYTES = 20000;
-
-function json(status, body) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" }
-  });
-}
-
-function clean(value, max) {
-  return typeof value === "string" ? value.trim().slice(0, max) : "";
-}
 
 // Optional heads-up email for each new request. Needs two Worker secrets:
 //   RESEND_API_KEY  - an API key from resend.com
@@ -226,6 +219,23 @@ async function handleAdmin(request, env, url) {
       <td class="notes">${escapeHtml(r.notes)}</td>
     </tr>`).join("");
 
+  // Sign-ups and trials. Missing until migration 0003 is applied, so a failure here only hides the table.
+  let accounts = [];
+  try {
+    accounts = (await env.LEADS_DB.prepare(
+      "SELECT created_at, email, name, plan, subscription_status, trial_end, current_period_end, cancel_at_period_end " +
+      "FROM users ORDER BY id DESC LIMIT 500"
+    ).all()).results || [];
+  } catch {}
+  const accountRows = accounts.map((u) => `<tr>
+      <td>${escapeHtml(u.created_at)} UTC</td>
+      <td><strong>${escapeHtml(u.name)}</strong><br><a href="mailto:${escapeHtml(u.email)}">${escapeHtml(u.email)}</a></td>
+      <td>${escapeHtml(u.plan || "-")}</td>
+      <td>${escapeHtml(u.subscription_status || "no card yet")}${u.cancel_at_period_end ? " (cancelling)" : ""}</td>
+      <td>${escapeHtml(u.trial_end ? u.trial_end.slice(0, 10) : "-")}</td>
+      <td>${escapeHtml(u.current_period_end ? u.current_period_end.slice(0, 10) : "-")}</td>
+    </tr>`).join("");
+
   const html = `<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex">
 <title>Audit requests · CertiFlow</title>
@@ -244,6 +254,12 @@ async function handleAdmin(request, env, url) {
 <div class="wrap"><table>
 <thead><tr><th>Received</th><th>Company</th><th>Contact</th><th>Subs</th><th>Self-check</th><th>Source</th><th>Notes</th></tr></thead>
 <tbody>${rows || '<tr><td colspan="7">No requests yet.</td></tr>'}</tbody>
+</table></div>
+<h1 style="margin-top:32px">Accounts and trials</h1>
+<p>${accounts.length} most recent sign-ups. Payment details live in Stripe.</p>
+<div class="wrap"><table>
+<thead><tr><th>Signed up</th><th>Account</th><th>Plan</th><th>Status</th><th>Trial ends</th><th>Current period ends</th></tr></thead>
+<tbody>${accountRows || '<tr><td colspan="6">No sign-ups yet.</td></tr>'}</tbody>
 </table></div></body></html>`;
   return new Response(html, { headers: { ...ADMIN_HEADERS, "Content-Type": "text/html; charset=utf-8" } });
 }
@@ -448,6 +464,23 @@ export default {
       } catch (err) {
         console.error("admin page failed", err && err.stack);
         return new Response("Couldn't load audit requests.", { status: 500, headers: ADMIN_HEADERS });
+      }
+    }
+    const routes = {
+      "/auth/google": () => startGoogleSignIn(request, env),
+      "/auth/google/callback": () => finishGoogleSignIn(request, env),
+      "/auth/logout": () => signOut(request, env),
+      "/api/me": async () => describeMe(request, env, await currentUser(request, env)),
+      "/api/checkout": async () => handleCheckout(request, env, await currentUser(request, env)),
+      "/api/billing-portal": async () => handleBillingPortal(request, env, await currentUser(request, env)),
+      "/api/stripe/webhook": () => handleStripeWebhook(request, env)
+    };
+    if (Object.prototype.hasOwnProperty.call(routes, url.pathname)) {
+      try {
+        return await routes[url.pathname]();
+      } catch (err) {
+        console.error(url.pathname + " failed", err && err.stack);
+        return json(500, { error: "Something went wrong. Please try again, or email support@certiflowapp.com." });
       }
     }
     // Anything else that isn't a static file gets the 404 page (not_found_handling in wrangler.jsonc).

@@ -34,12 +34,14 @@ CertiFlow is a self-service compliance portal starting at **$49/month**:
 
 ## Site and deployment
 
-The site is a static page in `public/` (built into `dist/`) served by a Cloudflare Worker with static assets (`wrangler.jsonc`). One small script, `src/worker.js`, handles the free-audit form at `POST /api/audit` and stores requests in the D1 database `certiflow-leads`.
+The site is a static page in `public/` (built into `dist/`) served by a Cloudflare Worker with static assets (`wrangler.jsonc`). The Worker in `src/` handles Sign in with Google, Stripe subscriptions with a 14-day free trial, and the onboarding form at `POST /api/audit`, all stored in the D1 database `certiflow-leads`.
 
 ```
 public/            static site: index.html, styles.css, app.js, fonts, _headers,
                    guides/ (COI checklist, premium audits), tools/ (broker notice), sample-gap-report (.html and .pdf), privacy, 404
-src/worker.js      audit-request API -> D1
+src/worker.js      routes: onboarding form (/api/audit), /admin leads page
+src/accounts.js    Sign in with Google (/auth/google), sessions, /api/me
+src/billing.js     Stripe checkout with a 14-day trial, billing portal, signed webhook
 migrations/        D1 schema
 scripts/build.mjs  link check, then copy public/ to dist/ (npm run build)
 docs/              strategy notes (see AUDIT.md: move these out of a public repo)
@@ -49,7 +51,7 @@ docs/              strategy notes (see AUDIT.md: move these out of a public repo
 |---|---|
 | `npm run dev` | Local server at http://localhost:8787 (run `npx wrangler d1 migrations apply certiflow-leads --local` once first) |
 | `npm run build` | Checks every local link and asset, then writes `dist/` |
-| `npm test` | Runs the audit-request API tests (`test/`) |
+| `npm test` | Runs the API, account and billing tests (`test/`) |
 | `npm run deploy` | Deploys to the `certiflowapp-com` Worker |
 | `npm run leads` | Lists the latest audit requests from D1 |
 
@@ -57,9 +59,44 @@ Workers Builds (Git integration) deploys `main` automatically: build command `np
 
 ---
 
+## Accounts and billing setup
+
+Visitors pick a plan, sign in with Google, then add a card on Stripe's checkout page. Stripe starts a 14-day trial and charges nothing until it ends; if there's no card when the trial ends, the subscription is cancelled instead of billed. Each account gets one trial. Customers change their card, switch plans or cancel through Stripe's billing portal, opened from **Manage billing** on `/account`.
+
+Until the secrets below exist, the site still works: sign-up shows "opens shortly" and points people to support@.
+
+**1. Database tables (once):** `npm run db:migrate` applies `migrations/0003_accounts.sql` (users, sessions, Stripe events).
+
+**2. Google sign-in:** in [Google Cloud Console](https://console.cloud.google.com/apis/credentials), configure the OAuth consent screen (app name CertiFlow, scopes `openid`, `email`, `profile`), then create an **OAuth client ID** of type *Web application* with these authorized redirect URIs:
+
+```
+https://certiflowapp.com/auth/google/callback
+https://certiflowapp-com.svimranmy.workers.dev/auth/google/callback
+```
+
+**3. Stripe:** use test mode first (`sk_test_...`, card `4242 4242 4242 4242`). In the Stripe dashboard:
+- Developers → API keys: copy the secret key.
+- Developers → Webhooks → Add endpoint `https://certiflowapp.com/api/stripe/webhook` with events `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`. Copy its signing secret.
+- Settings → Billing → Customer portal: save the settings once (allow cancelling, updating payment methods and switching between the three CertiFlow plans).
+
+The three monthly prices ($49, $99, $199) are created in Stripe automatically the first time each plan is chosen.
+
+**4. Secrets:** add each as type **Secret** in Cloudflare (Workers & Pages → certiflowapp-com → Settings → Variables and Secrets), or with `npx wrangler secret put NAME`:
+
+| Secret | Value |
+|---|---|
+| `GOOGLE_CLIENT_ID` | OAuth client ID, ends in `.apps.googleusercontent.com` |
+| `GOOGLE_CLIENT_SECRET` | OAuth client secret |
+| `STRIPE_SECRET_KEY` | `sk_test_...`, later `sk_live_...` |
+| `STRIPE_WEBHOOK_SECRET` | `whsec_...` from the webhook endpoint |
+
+For local development put the same names in `.dev.vars` (git-ignored). Sign-ups and trial status show on `/admin` under **Accounts and trials**.
+
+---
+
 ## Tracking outreach and reading leads
 
-Every audit request stores where the visitor first came from: any `utm_*` tags or a short `ref` code in the link, plus the referring site. It also stores their answers to the on-page self-check. Tag every link you send so you can see which emails and campaigns turn into audits.
+Every onboarding submission stores where the visitor first came from: any `utm_*` tags or a short `ref` code in the link, plus the referring site. It also stores their answers to the on-page self-check. Tag every link you send so you can see which emails and campaigns turn into audits.
 
 | Where the link goes | Link to use |
 |---|---|
